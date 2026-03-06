@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  aegis-api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - RATE_LIMIT_PER_MIN=120
+      - MAX_UPLOAD_MB=15
+      - DATA_RETENTION_DAYS=30
+    volumes:
+      - ./data:/app/data
+
