@@ -1,0 +1,229 @@
+[!] WARNING: face_recognition not installed. Face verification will be disabled.
+[!] To enable face recognition, install: pip install dlib face_recognition
+[!] Note: On Windows, this requires Visual Studio C++ Build Tools
+INFO:     127.0.0.1:56884 - "GET / HTTP/1.1" 200 OK
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_3.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_1.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_4.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_2.png
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_5.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_7.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_6.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_8.png
+[*] Generating mock carrier image for: reliability...
+[*] Generating mock carrier image for: reliability...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_9.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772812931362_10.png
+INFO:     127.0.0.1:54410 - "POST /api/shamir-stego/create HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54415 - "POST /api/stego/analyze-batch HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51123 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64264 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64264 - "GET /static/js/main.833837bd.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63974 - "GET /static/css/main.4f9f5ab4.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63974 - "GET /favicon.ico HTTP/1.1" 200 OK
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[!] AI generation failed for share 4: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[!] AI generation failed for share 3: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[!] AI generation failed for share 1: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[!] AI generation failed for share 2: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[!] AI generation failed for share 7: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[!] AI generation failed for share 5: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[*] Using OpenAI Images API for: Snowy mountain peak, white and blue winter theme...
+[!] AI generation failed for share 6: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[!] AI generation failed for share 8: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[!] AI generation failed for share 9: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+[!] AI generation failed for share 10: Request failed after 2 attempt(s): 400 Client Error: Bad Request for url: https://api.openai.com/v1/images/generations, using random fallback
+INFO:     127.0.0.1:57412 - "POST /api/shamir-stego/create HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /data/output_stego/shamir_stego_1772813353038_1.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53892 - "GET /data/output_stego/shamir_stego_1772813353038_3.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /data/output_stego/shamir_stego_1772813353038_2.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55694 - "GET /data/output_stego/shamir_stego_1772813353038_4.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54053 - "GET /data/output_stego/shamir_stego_1772813353038_5.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /data/output_stego/shamir_stego_1772813353038_6.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /data/output_stego/shamir_stego_1772813353038_7.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /data/output_stego/shamir_stego_1772813353038_8.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55694 - "GET /data/output_stego/shamir_stego_1772813353038_9.png?t=1772813360780 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /data/output_stego/shamir_stego_1772813353038_10.png?t=1772813360780 HTTP/1.1" 200 OK
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_3.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_4.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_2.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_1.png
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_5.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_6.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_7.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_8.png
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Generating mock carrier image for: Snowy mountain peak, white and blue winter theme...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_9.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813362911_10.png
+INFO:     127.0.0.1:57849 - "POST /api/shamir-stego/create HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54053 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53892 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55694 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /data/output_stego/shamir_stego_1772813362911_9.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53892 - "GET /data/output_stego/shamir_stego_1772813362911_8.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /data/output_stego/shamir_stego_1772813362911_10.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /data/output_stego/shamir_stego_1772813362911_7.png?t=1772813363574 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53892 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55694 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54053 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55694 - "GET /data/output_stego/shamir_stego_1772813362911_7.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /data/output_stego/shamir_stego_1772813362911_8.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54053 - "GET /data/output_stego/shamir_stego_1772813362911_9.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53892 - "GET /data/output_stego/shamir_stego_1772813362911_10.png?t=1772813367360 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "POST /api/shamir-stego/reveal HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51808 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59608 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55214 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60572 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56959 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "GET /data/output_stego/shamir_stego_1772813362911_7.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51808 - "GET /data/output_stego/shamir_stego_1772813362911_8.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60572 - "GET /data/output_stego/shamir_stego_1772813362911_9.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59608 - "GET /data/output_stego/shamir_stego_1772813362911_10.png?t=1772813367488 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57492 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813380017 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51556 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813380017 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51333 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813380017 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64579 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813380017 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50102 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813380017 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49343 - "POST /api/shamir-stego/reveal HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54744 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56358 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61713 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52276 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51668 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64704 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51668 - "GET /data/output_stego/shamir_stego_1772813362911_7.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61713 - "GET /data/output_stego/shamir_stego_1772813362911_8.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56358 - "GET /data/output_stego/shamir_stego_1772813362911_10.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64704 - "GET /data/output_stego/shamir_stego_1772813362911_9.png?t=1772813380070 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54744 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813380606 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51668 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813380606 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61713 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813380606 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64704 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813380606 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52276 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813380606 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56358 - "POST /api/shamir-stego/reveal HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50254 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50631 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62054 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58233 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50197 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52910 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50631 - "GET /data/output_stego/shamir_stego_1772813362911_7.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62054 - "GET /data/output_stego/shamir_stego_1772813362911_8.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58233 - "GET /data/output_stego/shamir_stego_1772813362911_9.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50254 - "GET /data/output_stego/shamir_stego_1772813362911_10.png?t=1772813380670 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50631 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813381461 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52910 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813381461 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58233 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813381461 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50197 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813381461 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62054 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813381461 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50254 - "POST /api/shamir-stego/reveal HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50254 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813381461 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53004 - "GET /data/output_stego/shamir_stego_1772813362911_3.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53518 - "GET /data/output_stego/shamir_stego_1772813362911_5.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "GET /data/output_stego/shamir_stego_1772813362911_1.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51766 - "GET /data/output_stego/shamir_stego_1772813362911_2.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50917 - "GET /data/output_stego/shamir_stego_1772813362911_6.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50346 - "GET /data/output_stego/shamir_stego_1772813362911_4.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51766 - "GET /data/output_stego/shamir_stego_1772813362911_7.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50917 - "GET /data/output_stego/shamir_stego_1772813362911_9.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50346 - "GET /data/output_stego/shamir_stego_1772813362911_8.png?t=1772813381522 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49708 - "GET /data/output_stego/shamir_stego_1772813362911_10.png?t=1772813381522 HTTP/1.1" 200 OK
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_1.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_4.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_3.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_2.png
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_5.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_6.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_8.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_7.png
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Generating mock carrier image for: Forest with mystical fog, green and gray nature...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_9.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813415786_10.png
+INFO:     127.0.0.1:56528 - "POST /api/shamir-stego/create HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56528 - "GET /data/output_stego/shamir_stego_1772813415786_1.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61272 - "GET /data/output_stego/shamir_stego_1772813415786_2.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /data/output_stego/shamir_stego_1772813415786_3.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59498 - "GET /data/output_stego/shamir_stego_1772813415786_4.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61128 - "GET /data/output_stego/shamir_stego_1772813415786_5.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60102 - "GET /data/output_stego/shamir_stego_1772813415786_6.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56528 - "GET /data/output_stego/shamir_stego_1772813415786_7.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61272 - "GET /data/output_stego/shamir_stego_1772813415786_8.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /data/output_stego/shamir_stego_1772813415786_9.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60102 - "GET /data/output_stego/shamir_stego_1772813415786_10.png?t=1772813416418 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60102 - "POST /api/shamir-stego/download-zip HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58211 - "POST /api/stego/analyze-batch HTTP/1.1" 200 OK
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_2.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_3.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_4.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_1.png
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_6.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_5.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_7.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_8.png
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Generating mock carrier image for: Desert landscape at sunset, orange and red tones...
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_10.png
+[*] Carrier image saved to: C:\Users\NISHANTH\OneDrive\Desktop\Project_Aegis_Ghost\data\output_stego\shamir_stego_1772813498637_9.png
+INFO:     127.0.0.1:50175 - "POST /api/shamir-stego/create HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50175 - "GET /data/output_stego/shamir_stego_1772813498637_1.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55347 - "GET /data/output_stego/shamir_stego_1772813498637_2.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59112 - "GET /data/output_stego/shamir_stego_1772813498637_3.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60462 - "GET /data/output_stego/shamir_stego_1772813498637_4.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50570 - "GET /data/output_stego/shamir_stego_1772813498637_5.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55391 - "GET /data/output_stego/shamir_stego_1772813498637_6.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55347 - "GET /data/output_stego/shamir_stego_1772813498637_7.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50175 - "GET /data/output_stego/shamir_stego_1772813498637_8.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59112 - "GET /data/output_stego/shamir_stego_1772813498637_9.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60462 - "GET /data/output_stego/shamir_stego_1772813498637_10.png?t=1772813499352 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59285 - "POST /api/shamir-stego/download-zip HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "POST /api/stego/analyze-batch HTTP/1.1" 200 OK

@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Aegis Ghost</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neon-cyan: #00f0ff;
+      --neon-blue: #0080ff;
+      --neon-purple: #a020f0;
+      --neon-green: #00ff88;
+      --dark-bg: #0a0a0f;
+      --card-bg: #12121a;
+      --card-border: #1e1e2e;
+      --text-primary: #e0e0e0;
+      --text-secondary: #888;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--dark-bg);
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+    
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(160, 32, 240, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(0, 128, 255, 0.02) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Navbar */
+    .navbar {
+      background: rgba(10, 10, 15, 0.95) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+      padding: 15px 0;
+    }
+    
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: var(--neon-cyan) !important;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+    
+    .nav-link {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-secondary) !important;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 10px 20px !important;
+      margin: 0 5px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: var(--neon-cyan) !important;
+      background: rgba(0, 240, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    }
+    
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      box-shadow: 0 15px 50px rgba(0, 240, 255, 0.1);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(160, 32, 240, 0.05) 100%);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--neon-cyan);
+      padding: 20px 25px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .card-body {
+      padding: 25px;
+    }
+    
+    /* Form Elements */
+    .form-control, .form-select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      padding: 15px 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+      color: #fff;
+    }
+    
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .form-label {
+      color: var(--text-secondary);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    
+    /* Buttons */
+    .btn {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 15px 30px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-lg {
+      padding: 18px 35px;
+      font-size: 1.1rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 100%);
+      border: none;
+      color: #000;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--neon-cyan) 50%, var(--neon-blue) 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.4);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--neon-green) 0%, #00cc6a 100%);
+      border: none;
+      color: #000;
+    }
+    
+    .btn-success:hover {
+      background: linear-gradient(135deg, #00ffaa 0%, var(--neon-green) 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ff4757 0%, #cc2937 100%);
+      border: none;
+      color: #fff;
+    }
+    
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #ff6b7a 0%, #ff4757 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+    }
+    
+    .btn-outline-light {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--text-primary);
+    }
+    
+    .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+    
+    /* Section Headers */
+    .section h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: var(--neon-cyan);
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+    }
+    
+    /* Logo */
+    .logo-section {
+      text-align: center;
+      padding: 40px 20px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    
+    .logo-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .logo-img {
+      max-width: 200px;
+      filter: drop-shadow(0 0 40px rgba(0, 240, 255, 0.6));
+      animation: pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 40px rgba(0, 240, 255, 0.6)); }
+      50% { transform: scale(1.05); filter: drop-shadow(0 0 60px rgba(0, 240, 255, 0.8)); }
+    }
+    
+    .project-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 2.5rem;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      margin-top: 25px;
+      text-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+    }
+    
+    .project-subtitle {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 300;
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      letter-spacing: 5px;
+      margin-top: 10px;
+    }
+    
+    /* Alerts */
+    .alert {
+      border-radius: 10px;
+      padding: 20px 25px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+    }
+    
+    .alert-success {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      color: var(--neon-green);
+    }
+    
+    .alert-danger {
+      background: rgba(255, 71, 87, 0.1);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+      color: #ff6b7a;
+    }
+    
+    .alert-warning {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      color: #ffc107;
+    }
+    
+    .alert-info {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--neon-cyan);
+    }
+    
+    /* Code blocks */
+    .code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    
+    /* Video preview */
+    .video-preview {
+      width: 100%;
+      max-width: 400px;
+      border: 2px solid rgba(0, 240, 255, 0.3);
+      border-radius: 12px;
+    }
+    
+    /* Small text */
+    .small-muted {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Stat cards */
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+    
+    .stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 5px;
+    }
+    
+    /* Lists */
+    ol {
+      padding-left: 20px;
+    }
+    
+    ol li {
+      margin-bottom: 12px;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.5);
+      border-top: 1px solid rgba(0, 240, 255, 0.1);
+      padding: 30px 20px;
+      margin-top: 60px;
+    }
+    
+    footer p {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+    }
+    
+    footer strong {
+      color: var(--neon-cyan);
+    }
+    
+    /* Feature icons */
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+    }
+    
+    /* Checkbox styling */
+    .form-check-input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 1.3em;
+      height: 1.3em;
+      cursor: pointer;
+    }
+    
+    .form-check-input:checked {
+      background: var(--neon-cyan);
+      border-color: var(--neon-cyan);
+    }
+    
+    .form-check-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+    
+    /* Badge */
+    .badge {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      padding: 8px 15px;
+      border-radius: 5px;
+    }
+    
+    /* Image thumbnails */
+    .img-thumbnail {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .img-thumbnail:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 5px 20px rgba(0, 240, 255, 0.3);
+    }
+    
+    /* Text utilities */
+    .text-success { color: var(--neon-green) !important; }
+    .text-danger { color: #ff6b7a !important; }
+    .text-info { color: var(--neon-cyan) !important; }
+    
+    /* Spacing utilities */
+    .mt-6 { margin-top: 3rem; }
+    .mb-6 { margin-bottom: 3rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid px-5">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/logo.png" alt="Aegis Ghost" height="50" style="margin-right: 15px; filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));">
+        AEGIS GHOST
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#tab-lockdown" data-tab>🔒 Lockdown</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tab-recovery" data-tab>🔓 Recovery</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tab-shamir-stego" data-tab>🔐 Shamir-Stego</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tab-auth" data-tab>🛡️ Authentication</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tab-stego" data-tab>🖼️ Steganography</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tab-outputs" data-tab>📁 Outputs</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid px-5 mt-4 pb-5">
+    <div id="alerts"></div>
+
+    <!-- Logo Banner -->
+    <div class="logo-section">
+      <img src="/assets/logo.png" alt="Aegis Ghost Logo" class="logo-img">
+      <h1 class="project-title">PROJECT AEGIS GHOST</h1>
+      <p class="project-subtitle">Advanced Encryption & Steganography System</p>
+    </div>
+
+    <!-- LOCKDOWN SECTION -->
+    <section id="tab-lockdown" class="section">
+      <h3>🔒 Lockdown Phase</h3>
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🔐</span> Encrypt & Hide Secret
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <label class="form-label">🔑 Secret Message</label>
+                <textarea id="lockdownSecret" rows="4" class="form-control" placeholder="Enter your secret message to hide..."></textarea>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">🎨 Image Theme / Prompt</label>
+                <input type="text" id="lockdownPrompt" class="form-control" placeholder="e.g., Abstract colorful, Cyberpunk city, Mystical forest" />
+                <small class="text-muted mt-1 d-block">Each ghost image will have a unique variant of this theme</small>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">📊 Number of Shares</label>
+                  <input id="lockdownShares" type="number" class="form-control" value="10" min="2" max="16" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">🔑 Threshold Required</label>
+                  <input id="lockdownThreshold" type="number" class="form-control" value="6" min="2" max="16" />
+                </div>
+              </div>
+              <div class="mt-4">
+                <button id="lockdownBtn" class="btn btn-danger btn-lg w-100">
+                  🔒 RUN LOCKDOWN
+                </button>
+              </div>
+              <div id="lockdownResult" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">ℹ️</span> How It Works
+            </div>
+            <div class="card-body">
+              <p class="small-muted">Lockdown will:</p>
+              <ol>
+                <li>Encrypt your secret using <strong>AES-GCM</strong> military-grade encryption</li>
+                <li>Split the encryption key into <strong>Shamir Secret Shares</strong></li>
+                <li>Generate <strong>unique ghost images</strong> for each share</li>
+                <li>Hide shares invisibly using <strong>DWT Steganography</strong></li>
+                <li>You'll need <strong><span id="thresholdDisplay">6</span> shares</strong> minimum to recover</li>
+              </ol>
+              <hr style="border-color: rgba(255,255,255,0.1);">
+              <div class="text-center">
+                <div class="stat-value" id="sharesGenerated">0</div>
+                <div class="stat-label">Ghost Images Created</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECOVERY SECTION -->
+    <section id="tab-recovery" class="section d-none">
+      <h3>🔓 Recovery Phase</h3>
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🔑</span> Extract & Decrypt Secret
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="recoveryBiometric" style="transform: scale(1.3);">
+                  <label class="form-check-label ms-2" for="recoveryBiometric">
+                    🛡️ Enable Biometric Authentication
+                  </label>
+                </div>
+                <small class="text-muted mt-1 d-block">Requires face_recognition and voice modules installed</small>
+              </div>
+              <div class="alert alert-info">
+                <strong>📋 Instructions:</strong> Make sure you have at least <span class="badge bg-info">6</span> ghost images in your outputs folder. Recovery will automatically extract shares and reconstruct your secret.
+              </div>
+              <button id="recoveryBtn" class="btn btn-success btn-lg w-100 mt-4">
+                🔓 RUN RECOVERY
+              </button>
+              <div id="recoveryResult" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">ℹ️</span> How Recovery Works
+            </div>
+            <div class="card-body">
+              <p class="small-muted">Recovery will:</p>
+              <ol>
+                <li>Extract hidden shares from ghost images</li>
+                <li>Reconstruct the encryption key using Shamir's algorithm</li>
+                <li>Decrypt your original secret message</li>
+                <li>Display the recovered secret to you</li>
+              </ol>
+              <hr style="border-color: rgba(255,255,255,0.1);">
+              <div class="text-center">
+                <div class="stat-value" id="sharesAvailable">0</div>
+                <div class="stat-label">Shares Available</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHAMIR-STEGO SECTION -->
+    <section id="tab-shamir-stego" class="section d-none">
+      <h3>🔐 Shamir-Stego</h3>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🔒</span> Create Secret Shares
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <label class="form-label">🔑 Secret Message</label>
+                <textarea id="shamirSecret" rows="3" class="form-control" placeholder="Enter your secret message..."></textarea>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">🤖 AI Model</label>
+                <select id="shamirModel" class="form-select">
+                  <option value="pollinations">Pollinations AI (flux)</option>
+                  <option value="mock">Mock Generator</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">🎨 Image Prompt</label>
+                <select id="shamirPrompt" class="form-select">
+                  <option value="">-- Select a Prompt --</option>
+                  <option value="Abstract geometric patterns with hidden data, dark theme, cyberpunk">Abstract Geometric - Cyberpunk</option>
+                  <option value="Colorful abstract art with mathematical patterns, vibrant colors">Colorful Abstract - Mathematical</option>
+                  <option value="Mystical forest with glowing patterns, dark atmosphere, ethereal">Mystical Forest - Ethereal</option>
+                  <option value="Cyberpunk cityscape at night, neon lights, digital patterns">Cyberpunk City - Neon</option>
+                  <option value="Deep space with galaxy patterns, stars, cosmic dust">Deep Space - Cosmic</option>
+                  <option value="Ocean waves with fractal patterns, blue tones, underwater">Ocean Waves - Fractal</option>
+                  <option value="Desert landscape at sunset, geometric shadows, warm colors">Desert Sunset - Geometric</option>
+                  <option value="Aurora borealis with swirling lights, night sky, green purple">Aurora Borealis - Swirling</option>
+                  <option value="Digital matrix code, green black theme, falling code">Matrix Code - Digital</option>
+                  <option value="Fire and flames with fractal patterns, orange red, intense">Fire Flames - Fractal</option>
+                  <option value="custom">Custom Prompt...</option>
+                </select>
+              </div>
+              <div id="shamirCustomPromptDiv" class="mb-4 d-none">
+                <label class="form-label">✏️ Custom Prompt</label>
+                <input type="text" id="shamirCustomPrompt" class="form-control" placeholder="Enter your custom prompt...">
+              </div>
+              <button id="shamirCreateBtn" class="btn btn-primary w-100">
+                🔒 Create 10 Secret Images
+              </button>
+              <div id="shamirCreateResult" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🔓</span> Reveal Secret
+            </div>
+            <div class="card-body">
+              <p class="small-muted">Upload the 10 ghost images to reconstruct the secret.</p>
+              <div class="mb-4">
+                <label class="form-label">📁 Select Images (10 required)</label>
+                <input type="file" id="shamirRevealFiles" accept="image/*" class="form-control" multiple>
+              </div>
+              <button id="shamirRevealBtn" class="btn btn-success w-100">
+                🔍 Reveal Secret
+              </button>
+              <div id="shamirRevealResult" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4 mt-2">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🖼️</span> Generated Secret Images
+            </div>
+            <div class="card-body">
+              <div id="shamirImages" class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTHENTICATION SECTION -->
+    <section id="tab-auth" class="section d-none">
+      <h3>🛡️ Biometric Authentication</h3>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">👤</span> Face Verification
+            </div>
+            <div class="card-body">
+              <p class="small-muted">Capture a snapshot from your webcam and verify it against assets/owner.jpg.</p>
+              <video id="video" class="video-preview mb-3" autoplay playsinline></video>
+              <div class="d-flex gap-3 mb-3">
+                <button id="startCam" class="btn btn-outline-light flex-grow-1">📷 Start Camera</button>
+                <button id="capture" class="btn btn-primary flex-grow-1" disabled>📸 Capture & Verify</button>
+              </div>
+              <canvas id="canvas" width="400" height="300" class="hidden"></canvas>
+              <div id="faceResult" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🎤</span> Voice Enrollment / Verification
+            </div>
+            <div class="card-body">
+              <p class="small-muted">Upload WAV / MP3 for enrollment, then verify another sample.</p>
+              <div class="mb-4">
+                <label class="form-label">Enroll Audio</label>
+                <input type="file" id="enrollFile" accept="audio/*" class="form-control" />
+                <button id="enrollBtn" class="btn btn-primary mt-3 w-100">🎙️ Enroll Voice</button>
+              </div>
+              <hr style="border-color: rgba(255,255,255,0.1);">
+              <div class="mb-3">
+                <label class="form-label">Verify Audio</label>
+                <input type="file" id="verifyFile" accept="audio/*" class="form-control" />
+                <button id="verifyBtn" class="btn btn-success mt-3 w-100">✅ Verify Voice</button>
+              </div>
+              <div id="voiceResult" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEGANOGRAPHY SECTION -->
+    <section id="tab-stego" class="section d-none">
+      <h3>🖼️ Steganography</h3>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">👁️</span> Hide Secret Data
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <label class="form-label">Carrier Image</label>
+                <input type="file" id="carrierImage" accept="image/*" class="form-control" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Secret Text</label>
+                <textarea id="stegoSecret" rows="4" class="form-control" placeholder="Enter secret text to hide..."></textarea>
+              </div>
+              <button id="stegoHideBtn" class="btn btn-primary w-100">👁️ Hide Data</button>
+              <div id="stegoHideResult" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="feature-icon">🔍</span> Reveal Secret Data
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <label class="form-label">Stego Image</label>
+                <input type="file" id="stegoImage" accept="image/*" class="form-control" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Bytes to Extract</label>
+                <input type="number" id="bytesToExtract" class="form-control" value="64" />
+              </div>
+              <button id="stegoRevealBtn" class="btn btn-success w-100">🔍 Reveal Data</button>
+              <div id="stegoRevealResult" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUTPUTS SECTION -->
+    <section id="tab-outputs" class="section d-none">
+      <h3>📁 Generated Outputs</h3>
+      <div class="row g-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>🖼️ Ghost Images & Files</span>
+              <button id="refreshOutputs" class="btn btn-outline-light btn-sm">🔄 Refresh Gallery</button>
+            </div>
+            <div class="card-body">
+              <div id="outputs" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center">
+    <p class="mb-0">
+      <strong style="font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); letter-spacing: 3px;">
+        PROJECT AEGIS GHOST
+      </strong>
+      <span class="text-secondary mx-3">|</span>
+      <span class="text-secondary">Military-Grade Encryption & Steganography</span>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const api = {
+      faceVerify: async (blob) => {
+        const fd = new FormData();
+        fd.append('image', blob, 'capture.png');
+        const res = await fetch('/api/auth/face/verify', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      voiceEnroll: async (file) => {
+        const fd = new FormData();
+        fd.append('audio', file);
+        const res = await fetch('/api/voice/enroll', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      voiceVerify: async (file) => {
+        const fd = new FormData();
+        fd.append('audio', file);
+        const res = await fetch('/api/voice/verify', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      stegoHide: async (file, secret) => {
+        const fd = new FormData();
+        fd.append('image', file);
+        fd.append('secret_text', secret);
+        const res = await fetch('/api/stego/hide', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      stegoReveal: async (file, bytes) => {
+        const fd = new FormData();
+        fd.append('stego_image', file);
+        fd.append('num_bytes', String(bytes));
+        const res = await fetch('/api/stego/reveal', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      outputs: async () => {
+        const res = await fetch('/api/outputs');
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      lockdown: async (secret, prompt, nShares, threshold) => {
+        const res = await fetch('/api/lockdown', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            secret,
+            prompt: prompt || 'Abstract colorful',
+            n_shares: Number(nShares),
+            threshold: Number(threshold)
+          })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      recovery: async (biometricEnabled) => {
+        const res = await fetch('/api/recovery', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ biometric_enabled: biometricEnabled })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      shamirStegoCreate: async (secret, prompt, model) => {
+        const res = await fetch('/api/shamir-stego/create', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ secret, prompt, model, n_shares: 10 })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      shamirStegoReveal: async (files) => {
+        const fd = new FormData();
+        for (let i = 0; i < files.length; i++) {
+          fd.append('images', files[i]);
+        }
+        const res = await fetch('/api/shamir-stego/reveal', {
+          method: 'POST',
+          body: fd
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      }
+    };
+
+    function setAlert(type, msg) {
+      const el = document.getElementById('alerts');
+      el.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert" style="font-size: 1.1rem; padding: 20px 25px;">
+        ${msg}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
+      </div>`;
+    }
+
+    // Tabs
+    document.querySelectorAll('[data-tab]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = a.getAttribute('href');
+        document.querySelectorAll('main .section').forEach(s => s.classList.add('d-none'));
+        document.querySelector(id).classList.remove('d-none');
+        document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+
+    // Update threshold display
+    document.getElementById('lockdownThreshold').addEventListener('input', function() {
+      document.getElementById('thresholdDisplay').textContent = this.value;
+    });
+
+    // Camera handling
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const startCam = document.getElementById('startCam');
+    const captureBtn = document.getElementById('capture');
+    const faceResult = document.getElementById('faceResult');
+    let stream = null;
+
+    startCam.onclick = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = stream;
+        captureBtn.disabled = false;
+      } catch (err) {
+        setAlert('danger', 'Camera access denied or unavailable: ' + err);
+      }
+    };
+
+    captureBtn.onclick = async () => {
+      try {
+        const ctx = canvas.getContext('2d');
+        const w = 400, h = 300;
+        canvas.width = w; canvas.height = h;
+        ctx.drawImage(video, 0, 0, w, h);
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        faceResult.innerHTML = '<span class="text-info" style="font-size: 1.1rem;">Verifying...</span>';
+        const r = await api.faceVerify(blob);
+        faceResult.innerHTML = r.matched 
+          ? `<span class="text-success" style="font-size: 1.2rem;">✅ MATCH (distance=${r.distance?.toFixed(3)})</span>` 
+          : `<span class="text-danger" style="font-size: 1.2rem;">❌ NO MATCH (distance=${r.distance?.toFixed(3)})</span>`;
+      } catch (err) {
+        setAlert('danger', 'Face verify error: ' + err);
+      }
+    };
+
+    // Voice enroll/verify
+    const enrollBtn = document.getElementById('enrollBtn');
+    const enrollFile = document.getElementById('enrollFile');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyFile = document.getElementById('verifyFile');
+    const voiceResult = document.getElementById('voiceResult');
+
+    enrollBtn.onclick = async () => {
+      try {
+        if (!enrollFile.files[0]) return setAlert('warning', 'Select an audio file to enroll');
+        voiceResult.innerHTML = '<span class="text-info" style="font-size: 1.1rem;">Enrolling...</span>';
+        const r = await api.voiceEnroll(enrollFile.files[0]);
+        voiceResult.innerHTML = r.enrolled 
+          ? '<span class="text-success" style="font-size: 1.2rem;">✅ Enrollment success</span>' 
+          : '<span class="text-danger" style="font-size: 1.2rem;">❌ Enrollment failed</span>';
+      } catch (err) { setAlert('danger', 'Enroll error: ' + err); }
+    };
+
+    verifyBtn.onclick = async () => {
+      try {
+        if (!verifyFile.files[0]) return setAlert('warning', 'Select an audio file to verify');
+        voiceResult.innerHTML = '<span class="text-info" style="font-size: 1.1rem;">Verifying...</span>';
+        const r = await api.voiceVerify(verifyFile.files[0]);
+        voiceResult.innerHTML = r.matched 
+          ? `<span class="text-success" style="font-size: 1.2rem;">✅ SPEAKER MATCH (similarity=${r.similarity.toFixed(3)})</span>` 
+          : `<span class="text-danger" style="font-size: 1.2rem;">❌ NO MATCH (similarity=${r.similarity.toFixed(3)})</span>`;
+      } catch (err) { setAlert('danger', 'Verify error: ' + err); }
+    };
+
+    // Stego Hide
+    document.getElementById('stegoHideBtn').onclick = async () => {
+      const file = document.getElementById('carrierImage').files[0];
+      const secret = document.getElementById('stegoSecret').value;
+      if (!file || !secret) return setAlert('warning', 'Select image and enter secret text');
+      try {
+        const r = await api.stegoHide(file, secret);
+        document.getElementById('stegoHideResult').innerHTML = `
+          <div class="alert alert-success" style="font-size: 1.1rem;">✅ Hidden! Download: 
+            <a href="/download?path=${encodeURIComponent(r.output_image)}" target="_blank" class="text-info" style="font-size: 1.1rem;">${r.output_image}</a>
+          </div>`;
+      } catch (err) {
+        setAlert('danger', 'Stego hide error: ' + err);
+      }
+    };
+
+    // Stego Reveal
+    document.getElementById('stegoRevealBtn').onclick = async () => {
+      const file = document.getElementById('stegoImage').files[0];
+      const bytes = Number(document.getElementById('bytesToExtract').value || '0');
+      if (!file || !bytes) return setAlert('warning', 'Select stego image and bytes to extract');
+      try {
+        const r = await api.stegoReveal(file, bytes);
+        const out = r.text 
+          ? `<span class="text-success" style="font-size: 1.2rem;">${r.text}</span>` 
+          : `<span class="code text-info" style="font-size: 1.1rem;">HEX: ${r.raw_hex}</span>`;
+        document.getElementById('stegoRevealResult').innerHTML = `<div class="alert alert-success" style="font-size: 1.1rem;">✅ Extracted: ${out}</div>`;
+      } catch (err) {
+        setAlert('danger', 'Stego reveal error: ' + err);
+      }
+    };
+
+    // Outputs
+    async function refreshOutputs() {
+      try {
+        const r = await api.outputs();
+        const container = document.getElementById('outputs');
+        container.innerHTML = '';
+        r.files.forEach(path => {
+          const col = document.createElement('div');
+          col.className = 'col';
+          const isImg = path.toLowerCase().endsWith('.png');
+          col.innerHTML = `
+            <div class="card h-100" style="background: rgba(255,255,255,0.03);">
+              <div class="card-body p-3">
+                ${isImg ? `<img src="/download?path=${encodeURIComponent(path)}" class="img-thumbnail mb-3 w-100"/>` : ''}
+                <div class="small text-muted text-truncate" title="${path}" style="font-size: 1rem;">${path.split('/').pop()}</div>
+                <a href="/download?path=${encodeURIComponent(path)}" class="btn btn-sm btn-outline-primary w-100 mt-2" style="font-size: 1rem;">⬇️ Download</a>
+              </div>
+            </div>`;
+          container.appendChild(col);
+        });
+        document.getElementById('sharesGenerated').textContent = r.files.filter(f => f.includes('ghost')).length;
+        document.getElementById('sharesAvailable').textContent = r.files.filter(f => f.includes('ghost')).length;
+      } catch (err) {
+        setAlert('danger', 'List outputs error: ' + err);
+      }
+    }
+    document.getElementById('refreshOutputs').onclick = refreshOutputs;
+
+    // Shamir-Stego - Custom prompt visibility
+    document.getElementById('shamirPrompt').addEventListener('change', function() {
+      const customDiv = document.getElementById('shamirCustomPromptDiv');
+      if (this.value === 'custom') {
+        customDiv.classList.remove('d-none');
+      } else {
+        customDiv.classList.add('d-none');
+      }
+    });
+
+    // Shamir-Stego Create
+    document.getElementById('shamirCreateBtn').onclick = async () => {
+      const secret = document.getElementById('shamirSecret').value.trim();
+      if (!secret) return setAlert('warning', 'Enter secret text');
+      
+      const promptSelect = document.getElementById('shamirPrompt');
+      let prompt = promptSelect.value;
+      if (prompt === 'custom') {
+        prompt = document.getElementById('shamirCustomPrompt').value.trim();
+        if (!prompt) return setAlert('warning', 'Enter a custom prompt');
+      }
+      if (!prompt) return setAlert('warning', 'Select or enter a prompt');
+      
+      const model = document.getElementById('shamirModel').value;
+      
+      const btn = document.getElementById('shamirCreateBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating 10 images...';
+      
+      try {
+        const r = await api.shamirStegoCreate(secret, prompt, model);
+        
+        // Display images
+        const container = document.getElementById('shamirImages');
+        container.innerHTML = '';
+        r.generated_files.forEach((path, idx) => {
+          const col = document.createElement('div');
+          col.className = 'col';
+          col.innerHTML = `
+            <div class="card h-100" style="background: rgba(255,255,255,0.03);">
+              <div class="card-body p-2">
+                <img src="/download?path=${encodeURIComponent(path)}" class="img-thumbnail mb-2 w-100" style="height: 120px; object-fit: cover;"/>
+                <div class="small text-muted text-center">Share ${idx + 1}</div>
+                <a href="/download?path=${encodeURIComponent(path)}" class="btn btn-sm btn-outline-primary w-100 mt-1" download>⬇️</a>
+              </div>
+            </div>`;
+          container.appendChild(col);
+        });
+        
+        document.getElementById('shamirCreateResult').innerHTML = `
+          <div class="alert alert-success" style="font-size: 1.1rem;">
+            <strong style="font-size: 1.2rem;">✅ Created ${r.generated_files.length} secret images!</strong><br>
+            <small>Each image contains a hidden share. You need all 10 to recover the secret.</small>
+          </div>`;
+        refreshOutputs();
+      } catch (err) {
+        setAlert('danger', 'Shamir-Stego create error: ' + err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔒 Create 10 Secret Images';
+      }
+    };
+
+    // Shamir-Stego Reveal
+    document.getElementById('shamirRevealBtn').onclick = async () => {
+      const files = document.getElementById('shamirRevealFiles').files;
+      if (files.length < 10) return setAlert('warning', 'Select at least 10 images');
+      
+      const btn = document.getElementById('shamirRevealBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Revealing...';
+      
+      try {
+        const r = await api.shamirStegoReveal(files);
+        document.getElementById('shamirRevealResult').innerHTML = `
+          <div class="alert alert-success" style="font-size: 1.2rem;">
+            <strong>✅ Secret Revealed:</strong><br>
+            <span style="color: var(--neon-cyan); font-size: 1.4rem; font-family: 'Courier New', monospace;">${r.secret}</span>
+          </div>`;
+      } catch (err) {
+        setAlert('danger', 'Shamir-Stego reveal error: ' + err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔍 Reveal Secret';
+      }
+    };
+
+    // Lockdown
+    document.getElementById('lockdownBtn').onclick = async () => {
+      const secret = document.getElementById('lockdownSecret').value.trim();
+      const prompt = document.getElementById('lockdownPrompt').value.trim();
+      const nShares = document.getElementById('lockdownShares').value;
+      const threshold = document.getElementById('lockdownThreshold').value;
+      if (!secret) return setAlert('warning', 'Enter secret text');
+      
+      const btn = document.getElementById('lockdownBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+      
+      try {
+        const r = await api.lockdown(secret, prompt, nShares, threshold);
+        document.getElementById('lockdownResult').innerHTML = `
+          <div class="alert alert-success" style="font-size: 1.1rem;">
+            <strong style="font-size: 1.2rem;">✅ ${r.message}</strong><br>
+            🔐 Shares Created: ${r.shares} | Threshold: ${r.threshold}<br>
+            🖼️ Images generated: ${r.generated_files.length}
+          </div>`;
+        refreshOutputs();
+      } catch (err) {
+        setAlert('danger', 'Lockdown error: ' + err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔒 RUN LOCKDOWN';
+      }
+    };
+
+    // Recovery
+    document.getElementById('recoveryBtn').onclick = async () => {
+      const biometricEnabled = document.getElementById('recoveryBiometric').checked;
+      
+      const btn = document.getElementById('recoveryBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+      
+      try {
+        const r = await api.recovery(biometricEnabled);
+        if (r.status === 'auth_required') {
+          document.getElementById('recoveryResult').innerHTML = `
+            <div class="alert alert-warning" style="font-size: 1.1rem;">
+              <strong>⚠️ ${r.message}</strong><br>
+              <small>${r.note}</small>
+            </div>`;
+        } else {
+          document.getElementById('recoveryResult').innerHTML = `
+            <div class="alert alert-success" style="font-size: 1.1rem;">
+              <strong style="font-size: 1.2rem;">✅ ${r.message}</strong><br>
+              🔑 Shares Used: ${r.shares_used}<br>
+              <hr style="border-color: rgba(0,255,136,0.3);">
+              <strong style="font-size: 1.4rem; color: var(--neon-cyan);">🔐 SECRET: ${r.secret}</strong>
+            </div>`;
+        }
+      } catch (err) {
+        setAlert('danger', 'Recovery error: ' + err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔓 RUN RECOVERY';
+      }
+    };
+
+    // Load status on startup
+    fetch('/api/status').then(r => r.json()).then(s => {
+      setAlert('info', '🚀 System Ready - Project Aegis Ghost Online');
+      refreshOutputs();
+    }).catch(err => setAlert('danger', 'Status error: ' + err));
+  </script>
+</body>
+</html>

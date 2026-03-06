@@ -1,27 +1,8 @@
-pycryptodomex
-pywavelets
-pillow
-numpy
-face_recognition
-diffusers
-transformers
-accelerate
-opencv-python
-customtkinter
-SpeechRecognition
-pyaudio
-dlib
-google-generativeai
-google-genai
-mediapipe
-librosa
-soundfile
-gradio
 fastapi
 uvicorn[standard]
-<<<<<<< HEAD
-python-multipart
-scipyscipy
-=======
-python-multipart
->>>>>>> e5fc0b8f35306ee3f5004b4278ee840afa3c8da4
+pycryptodomex
+numpy
+librosa
+face_recognition
+PyWavelets
+shamir-secret-sharing
