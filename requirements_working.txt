@@ -14,7 +14,6 @@ google-generativeai
 google-genai
 mediapipe
 librosa
-soundfile
 
 # Optional dependencies (require Visual Studio C++ on Windows)
 # Uncomment if you have VS C++ Build Tools installed:

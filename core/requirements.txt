@@ -1,0 +1,36 @@
+# Core cryptography and image processing
+pycryptodome
+pywavelets
+pillow
+numpy
+
+# AI and ML libraries
+diffusers
+transformers
+accelerate
+torch
+
+# Computer vision
+opencv-python
+mediapipe
+
+# Google Gemini AI
+google-generativeai
+google-genai
+
+# Audio processing
+librosa
+soundfile
+SpeechRecognition
+pyaudio
+
+# GUI
+customtkinter
+
+# Optional dependencies (require Visual Studio C++ Build Tools on Windows)
+# Uncomment these lines if you have VS C++ installed and want face recognition:
+# dlib
+# face_recognition
+
+# Note: The code will work without face_recognition/dlib.
+# Face verification features will be automatically disabled if not available.

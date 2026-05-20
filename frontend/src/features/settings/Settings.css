@@ -1,0 +1,782 @@
+/* Settings Page Styles */
+.settings-page {
+  animation: fadeIn 0.3s ease;
+}
+
+.settings-container {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .settings-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-tab {
+  padding: 14px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.settings-tab:hover {
+  background: rgba(0, 255, 136, 0.05);
+  color: var(--text-primary);
+}
+
+.settings-tab.active {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--primary-color);
+}
+
+.settings-content {
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.settings-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.setting-item:last-of-type {
+  border-bottom: none;
+}
+
+.setting-info label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.setting-info p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.setting-select {
+  padding: 10px 16px;
+  font-size: 14px;
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  min-width: 180px;
+  font-family: inherit;
+}
+
+.setting-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Toggle Switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  transition: all var(--transition-fast);
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+.toggle input:checked + .toggle-slider {
+  background: rgba(0, 255, 136, 0.2);
+  border-color: var(--primary-color);
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+  background: var(--primary-color);
+}
+
+.settings-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.settings-actions .btn {
+  padding: 12px 24px;
+}
+
+/* Alert Banner */
+.alert-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  animation: slideDown 0.3s ease;
+}
+
+.alert-banner.warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  color: #ffc107;
+}
+
+.alert-banner.info {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: var(--secondary-color);
+}
+
+.alert-banner.error {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: var(--error-color);
+}
+
+.alert-banner.success {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--success-color);
+}
+
+.alert-dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.alert-dismiss:hover {
+  opacity: 1;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* IP Detection Styles */
+.ip-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ip-value {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--background-dark);
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.ip-status {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.ip-status.secure {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--success-color);
+}
+
+.ip-status.warning {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.ip-status.danger {
+  background: rgba(255, 71, 87, 0.1);
+  color: var(--error-color);
+}
+
+/* IP Map Container */
+.ip-map-container {
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.map-visualization {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(180deg, #0a1628 0%, #1a2a4a 100%);
+  overflow: hidden;
+}
+
+.world-map-bg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.world-map-svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.location-marker {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.8));
+}
+
+.pulse-ring {
+  animation: pulseRing 2s ease-out infinite;
+  transform-origin: center;
+}
+
+@keyframes pulseRing {
+  0% {
+    r: 8;
+    opacity: 0.6;
+  }
+  100% {
+    r: 25;
+    opacity: 0;
+  }
+}
+
+.map-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.location-marker-floating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 10px 16px;
+  border-radius: 25px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.marker-icon {
+  font-size: 18px;
+}
+
+.marker-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.map-coords {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.coord-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.coord-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.coord-value {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--primary-color);
+}
+
+/* IP Status Card */
+.ip-status-card {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.05));
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.ip-status-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.ip-icon {
+  font-size: 20px;
+}
+
+.ip-status-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ip-main-info-enhanced {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+  margin-bottom: 20px;
+}
+
+.ip-address-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ip-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ip-address {
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary-color);
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.15);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+.ip-badge {
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.ip-badge.monitoring {
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--success-color);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+}
+
+.ip-badge.paused {
+  background: rgba(255, 71, 87, 0.15);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: var(--error-color);
+}
+
+.ip-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.ip-metric-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(10, 15, 26, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ip-metric-card:hover {
+  transform: translateY(-2px);
+  background: rgba(15, 20, 35, 0.8);
+  border-color: rgba(0, 255, 136, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.metric-icon {
+  font-size: 24px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 255, 136, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 136, 0.15);
+}
+
+.metric-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.btn-refresh {
+  align-self: flex-start;
+  padding: 10px 20px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  color: var(--secondary-color);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--secondary-color);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* IP History Card */
+.ip-history-card {
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.ip-history-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.history-icon {
+  font-size: 18px;
+}
+
+.ip-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.ip-history-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.ip-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.ip-history-item:hover {
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+.ip-history-item .ip {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ip-history-item .location {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ip-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ip-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.ip-meta .timestamp {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.ip-meta .badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--success-color);
+}
+
+.ip-meta .badge.current {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--secondary-color);
+}
+
+.ip-history-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-clear {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--error-color);
+  border-radius: 6px;
+  color: var(--error-color);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.btn-clear:hover {
+  background: rgba(255, 71, 87, 0.1);
+}
+
+/* IP Tips */
+.ip-tips {
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px dashed rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.ip-tips h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 12px;
+}
+
+.ip-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ip-tips li {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-left: 20px;
+  position: relative;
+}
+
+.ip-tips li::before {
+  content: "•";
+  position: absolute;
+  left: 6px;
+  color: var(--secondary-color);
+}
+
+/* Location List Styles */
+.location-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 300px;
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--background-dark);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.location-ip {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.location-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.location-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--success-color);
+}
+
+/* IP Location Map Styles */
+.ip-location-map {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.map-icon {
+  font-size: 16px;
+}
+
+.map-container {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  margin-bottom: 12px;
+}
+
+.map-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.location-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.location-coords {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+}

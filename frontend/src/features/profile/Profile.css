@@ -1,0 +1,254 @@
+.profile-page {
+  padding: 24px;
+  color: #fff;
+}
+
+.profile-status,
+.profile-error {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+.profile-status.compact,
+.profile-error.compact {
+  margin-top: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.profile-status {
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.25);
+}
+
+.profile-error {
+  background: rgba(255, 99, 99, 0.08);
+  border: 1px solid rgba(255, 99, 99, 0.25);
+}
+
+.profile-card {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.profile-photo-wrap {
+  width: 180px;
+  height: 180px;
+}
+
+.profile-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.profile-photo-edit {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.profile-file-input {
+  display: none;
+}
+
+.profile-file-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.profile-fields {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.profile-field {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.field-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: rgba(0, 255, 136, 0.45);
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.12);
+}
+
+.profile-fields-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.field-label {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+}
+
+.field-value {
+  color: #fff;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.profile-biometrics {
+  grid-template-columns: 1fr 1fr;
+}
+
+.profile-bio-column h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.profile-help {
+  margin: 0 0 12px 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.profile-video-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.profile-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.profile-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-btn {
+  border: 1px solid rgba(0, 255, 136, 0.35);
+  background: rgba(0, 255, 136, 0.14);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.profile-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.profile-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profile-face-ref {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.profile-face-ref-image {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-input-label {
+  margin-top: 10px;
+  margin-bottom: 6px;
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+}
+
+.profile-input {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.profile-access {
+  margin-top: 10px;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.profile-access.allow {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.35);
+}
+
+.profile-access.deny {
+  background: rgba(255, 99, 99, 0.1);
+  border: 1px solid rgba(255, 99, 99, 0.35);
+}
+
+@media (max-width: 800px) {
+  .profile-card {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-biometrics {
+    grid-template-columns: 1fr;
+  }
+}

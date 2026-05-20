@@ -28,9 +28,20 @@ yarn-error.log*
 Thumbs.db
 
 # Project specific
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
 data/output_stego/
 data/secure_tmp/
 data/profile_pictures/
+data/chat_files/
+data/conversations/
+data/manifests/
+data/audit/
+frontend/build/
 *.log
 app.log
 error.log
