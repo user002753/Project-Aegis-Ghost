@@ -1,8 +1,0 @@
-fastapi
-uvicorn[standard]
-pycryptodomex
-numpy
-librosa
-face_recognition
-PyWavelets
-shamir-secret-sharing
