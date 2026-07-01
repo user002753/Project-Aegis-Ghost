@@ -398,7 +398,7 @@ def test_shamir():
     
     # Verify
     assert secret == reconstructed, "Reconstruction failed!"
-    print("[✓] Shamir's Secret Sharing test passed!")
+    print("[PASS] Shamir's Secret Sharing test passed!")
     
     return True
 
@@ -420,7 +420,7 @@ def test_russian_doll():
     
     # Verify we can decrypt
     # In a real scenario, you'd need all passwords
-    print("[✓] Russian Doll Encryption test structure created!")
+    print("[PASS] Russian Doll Encryption test structure created!")
     
     return True
 
@@ -428,4 +428,4 @@ def test_russian_doll():
 if __name__ == "__main__":
     test_shamir()
     test_russian_doll()
-    print("\n[✓] All encryption tests passed!")
+    print("\n[PASS] All encryption tests passed!")

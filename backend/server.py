@@ -83,7 +83,12 @@ app = FastAPI(title="Project Aegis Ghost API", version="0.1.0")
 # CORS (safe defaults for localhost)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -183,6 +188,8 @@ def _get_env(name: str, default: str | None = None) -> str | None:
     alias_map = {
         "RAPHAEL_API_KEY": ["RAPHAEL_TOKEN", "RAPHAEL_KEY", "RAPHAEL_API_TOKEN"],
         "PEXELS_API_KEY": ["PEXELS_KEY", "PEXELS_TOKEN", "PEXELS_API_TOKEN"],
+        "LEONARDO_API_KEY": ["LEONARDO_KEY", "LEONARDO_TOKEN", "LEONARDO_API_TOKEN"],
+        "DEEPAI_API_KEY": ["DEEPAI_KEY", "DEEPAI_TOKEN"],
     }
     val = os.getenv(name)
     if val:
@@ -377,24 +384,45 @@ def _resolve_image_backend(provider: str = "auto", use_gemini: bool = True):
     Returns tuple: (backend_name, use_mock_flag, reason)
     """
     p = (provider or "auto").strip().lower()
+    has_leonardo = bool(_get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN") or _get_env("LEONARDO_API_TOKEN"))
     
     if p == "genai":
         if _get_env("GEMINI_API_KEY"):
             return ("genai", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
         return ("auto", False, "GEMINI_API_KEY missing; using auto provider chain")
     if p == "openai":
-        return ("openai", False, None) if _get_env("OPENAI_API_KEY") else ("mock", True, "OPENAI_API_KEY missing")
+        if _get_env("OPENAI_API_KEY"):
+            return ("openai", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "OPENAI_API_KEY missing")
     if p == "openrouter":
-        return ("openrouter", False, None) if _get_env("OPENROUTER_API_KEY") else ("mock", True, "OPENROUTER_API_KEY missing")
+        if _get_env("OPENROUTER_API_KEY"):
+            return ("openrouter", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "OPENROUTER_API_KEY missing")
     if p == "puter":
-        return ("puter", False, None) if _get_env("PUTER_API_KEY") else ("mock", True, "PUTER_API_KEY missing")
+        if _get_env("PUTER_API_KEY"):
+            return ("puter", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "PUTER_API_KEY missing")
     if p == "gemini":
         if _get_env("GEMINI_API_KEY"):
             return ("genai", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
         return ("auto", False, "GEMINI_API_KEY missing; using auto provider chain")
     if p == "groq":
         # Groq is text-only for image workflows; use LLM-guided local renderer.
-        return ("llm", False, None) if _get_env("GROQ_API_KEY") else ("mock", True, "GROQ_API_KEY missing")
+        if _get_env("GROQ_API_KEY"):
+            return ("llm", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "GROQ_API_KEY missing")
     if p == "llm":
         return ("llm", False, None)
     if p in ("llm-realistic", "llm_realistic", "realistic"):
@@ -408,20 +436,38 @@ def _resolve_image_backend(provider: str = "auto", use_gemini: bool = True):
         # Fast/free Pollinations model variants.
         return (p, False, None)
     if p == "pexels":
-        return ("pexels", False, None) if _get_env("PEXELS_API_KEY") else ("mock", True, "PEXELS_API_KEY missing")
+        if _get_env("PEXELS_API_KEY"):
+            return ("pexels", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "PEXELS_API_KEY missing")
     if p == "deepai":
         # DeepAI is a powerful image generation API
-        return ("deepai", False, None) if _get_env("DEEPAI_API_KEY") else ("mock", True, "DEEPAI_API_KEY missing")
+        if _get_env("DEEPAI_API_KEY"):
+            return ("deepai", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "DEEPAI_API_KEY missing")
     if p == "raphael":
-        return ("raphael", False, None) if _get_env("RAPHAEL_API_KEY") else ("mock", True, "RAPHAEL_API_KEY missing")
+        if _get_env("RAPHAEL_API_KEY"):
+            return ("raphael", False, None)
+        if has_leonardo:
+            return ("leonardo", False, None)
+        return ("mock", True, "RAPHAEL_API_KEY missing")
     if p == "leonardo":
-        return ("leonardo", False, None) if _get_env("LEONARDO_API_KEY") else ("mock", True, "LEONARDO_API_KEY missing")
+        return ("leonardo", False, None) if has_leonardo else ("mock", True, "LEONARDO_API_KEY missing")
     if p == "hf":
+        if has_leonardo:
+            return ("leonardo", False, None)
         return ("mock", True, "HF provider not implemented in this build")
     if p == "replicate":
+        if has_leonardo:
+            return ("leonardo", False, None)
         return ("mock", True, "Replicate provider not implemented in this build")
     if p != "auto":
         # Unknown provider -> safe fallback
+        if has_leonardo:
+            return ("leonardo", False, None)
         return ("mock", True, f"Unknown provider: {provider}")
 
     # auto resolution: use ai_engine provider chain.
@@ -527,8 +573,8 @@ def run_recovery(req: RecoveryRequest):
         plaintext = reconstruct_and_decrypt(
             captured_shares,
             ciphertext,
-            bytes.fromhex(nonce.hex() if isinstance(nonce, bytes) else nonce),
-            bytes.fromhex(tag.hex() if isinstance(tag, bytes) else tag)
+            bytes.fromhex(nonce) if isinstance(nonce, str) else nonce,
+            bytes.fromhex(tag) if isinstance(tag, str) else tag
         )
         
         return {
@@ -641,7 +687,7 @@ def ai_providers():
             "groq": bool(_get_env("GROQ_API_KEY")),
             "openai": bool(_get_env("OPENAI_API_KEY")),
             "gemini": bool(_get_env("GEMINI_API_KEY")),
-            "leonardo": bool(_get_env("LEONARDO_API_KEY")),
+            "leonardo": bool(_get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN")),
             "raphael": bool(_get_env("RAPHAEL_API_KEY")),
             "pexels": bool(_get_env("PEXELS_API_KEY")),
             "llm": True,  # local renderer always available
@@ -685,7 +731,7 @@ def ai_capabilities():
                 "model": _get_env("OPENAI_IMAGE_MODEL", "gpt-image-1"),
             },
             "leonardo": {
-                "available": bool(_get_env("LEONARDO_API_KEY")),
+                "available": bool(_get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN")),
                 "supports": ["image"],
                 "model": _get_env("LEONARDO_MODEL_ID", "aa77f04e-3eec-4034-9c07-d0f619684628"),
             },
@@ -1928,7 +1974,7 @@ def stego_advanced_hide(req: AdvancedStegoHideRequest):
         timestamp = int(time.time())
         out_paths = [None] * len(shares)
         file_hashes = {}
-        max_workers = max(2, min(6, int(os.getenv("ADV_STEGO_WORKERS", "4"))))
+        max_workers = max(2, int(os.getenv("ADV_STEGO_WORKERS", str(req.n_images))))
 
         def _generate_embed_one(i: int, share_item: tuple[int, bytes]):
             share_idx, share_bytes = share_item
@@ -3578,7 +3624,7 @@ def create_shamir_stego_images(req: ShamirStegoRequest):
         model = "pollinations-schnell" if requested_model == "pollinations" else requested_model
         batch_id = int(time.time() * 1000)
         image_paths = [None] * len(shares)
-        max_workers = max(2, min(6, int(os.getenv("SHAMIR_STEGO_WORKERS", "4"))))
+        max_workers = max(2, int(os.getenv("SHAMIR_STEGO_WORKERS", str(req.num_shares))))
 
         def _generate_and_embed(i_share):
             i, share = i_share

@@ -19,11 +19,11 @@ print(f"Secret message: {secret_message}")
 # 1. Encrypt and shatter
 print("\n[Step 1] Encrypting and shattering...")
 ciphertext, shares, nonce, tag = encrypt_and_shatter(secret_message)
-print(f"✓ Created {len(shares)} shares")
+print(f"[OK] Created {len(shares)} shares")
 
 # 2. Save metadata
 save_metadata(ciphertext, nonce, tag)
-print("✓ Metadata saved")
+print("[OK] Metadata saved")
 
 # 3. Generate ghost images and embed
 print("\n[Step 2] Generating ghost images and embedding shares...")
@@ -32,8 +32,8 @@ for i, (idx, share) in enumerate(shares[:3], 1):  # Test with just 3 shares
     print(f"  Processing share {i}/3...")
     generate_ghost_carrier(f"Ghost_{idx}", path, use_mock=True)
     embed_data_dwt(path, share, path)
-    print(f"  ✓ Share {i} embedded")
+    print(f"  [OK] Share {i} embedded")
 
 print("\n" + "="*50)
-print("✓ Lockdown test completed successfully!")
+print("[PASS] Lockdown test completed successfully!")
 print("Files created in data/output_stego/")

@@ -1,0 +1,198 @@
+\documentclass[tikz, border=15pt]{standalone}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows, fit, backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+    % --- Styling Parameters ---
+    font=\sffamily\small,
+    node distance=1.5cm and 2.0cm,
+    auto,
+    >=Stealth,
+    % --- Shapes & Colors ---
+    user/.style={
+        draw=blue!80!black,
+        fill=blue!10,
+        ultra thick,
+        circle,
+        minimum size=1.8cm,
+        align=center,
+        drop shadow,
+        font=\sffamily\bfseries
+    },
+    tier1/.style={
+        draw=teal!80!black,
+        fill=teal!5,
+        thick,
+        rectangle,
+        rounded corners=6pt,
+        minimum width=3.8cm,
+        minimum height=1.6cm,
+        align=center,
+        drop shadow,
+        font=\sffamily
+    },
+    tier2/.style={
+        draw=cyan!80!black,
+        fill=cyan!5,
+        thick,
+        rectangle,
+        rounded corners=6pt,
+        minimum width=3.8cm,
+        minimum height=1.6cm,
+        align=center,
+        drop shadow,
+        font=\sffamily
+    },
+    engine/.style={
+        draw=orange!80!black,
+        fill=orange!5,
+        thick,
+        rectangle,
+        rounded corners=6pt,
+        minimum width=3.6cm,
+        minimum height=1.4cm,
+        align=center,
+        drop shadow,
+        font=\sffamily
+    },
+    db/.style={
+        draw=gray!80!black,
+        fill=gray!10,
+        thick,
+        cylinder,
+        shape border rotate=90,
+        minimum width=2.2cm,
+        minimum height=1.8cm,
+        align=center,
+        drop shadow,
+        font=\sffamily
+    },
+    external/.style={
+        draw=red!75!black,
+        fill=red!5,
+        thick,
+        rectangle,
+        rounded corners=6pt,
+        minimum width=3.2cm,
+        minimum height=1.4cm,
+        align=center,
+        drop shadow,
+        font=\sffamily
+    },
+    % --- Path Styles ---
+    flow/.style={
+        draw=gray!80!black,
+        thick,
+        ->,
+        shorten >=2pt,
+        shorten <=2pt
+    },
+    flow_bi/.style={
+        draw=blue!60!black,
+        thick,
+        <->,
+        shorten >=2pt,
+        shorten <=2pt
+    },
+    flow_accent/.style={
+        draw=orange!80!black,
+        thick,
+        ->,
+        dashed,
+        shorten >=2pt,
+        shorten <=2pt
+    }
+]
+
+    % =========================================================================
+    % 1. NODES DEFINITION
+    % =========================================================================
+
+    % --- Core Client (Leftmost) ---
+    \node [user] (client) {🛡️\\Operator\\(React UI)};
+
+    % --- Gateway / Backend (Center Left) ---
+    \node [tier1, right=of client] (gateway) {
+        \textbf{FastAPI Gateway} \\ 
+        \textit{API Routing \& Context} \\
+        \scriptsize (REST Endpoints / TLS)
+    };
+
+    % --- Logical Security Core Engines (Vertical Stack on the Right) ---
+    % Coordinate mapping to center the engines relative to the gateway
+    \coordinate (engine_center) at ($(gateway.east) + (3.0cm, 0)$);
+
+    \node [engine] (auth) at ($(engine_center) + (0, 2.5cm)$) {
+        \textbf{Biometric / Auth Core} \\
+        \scriptsize dlib Facial Embeddings \\
+        \scriptsize Active Liveness Cascades
+    };
+
+    \node [engine] (crypto) at (engine_center) {
+        \textbf{Cryptographic Core} \\
+        \scriptsize PBKDF2 Key Derivation \\
+        \scriptsize Shamir SSS ($GF(2^8)$)
+    };
+
+    \node [engine] (stego) at ($(engine_center) - (0, 2.5cm)$) {
+        \textbf{Stego Hiding Engine} \\
+        \scriptsize Haar DWT Frequency Hiding \\
+        \scriptsize Spatial LSB Decoy Trap
+    };
+
+    % --- Persistent Database (Bottom Left) ---
+    \node [db, below=of gateway, node distance=2.5cm] (db) {
+        \textbf{Secure DB} \\
+        \scriptsize JSON Registry \\
+        \scriptsize \& Audit Logs
+    };
+
+    % --- External AI Providers (Top Right & Bottom Right) ---
+    \node [external, right=of auth] (gemini) {
+        \textbf{Google Gemini API} \\
+        \scriptsize Latent Cover Synthesis
+    };
+
+    \node [external, right=of stego] (groq) {
+        \textbf{Groq LLM Engine} \\
+        \scriptsize Security Advisor & Audits
+    };
+
+    % =========================================================================
+    % 2. EDGES & FLOW PATHWAYS
+    % =========================================================================
+
+    % Client <-> Gateway Interaction
+    \path [flow_bi] (client) -- node [above, font=\scriptsize\itshape] {HTTPS/JSON} (gateway);
+
+    % Gateway -> DB connection
+    \path [flow_bi] (gateway) -- (db);
+
+    % Gateway Routing to Security Engines
+    \path [flow] ($(gateway.east) + (0, 0.2cm)$) |- node [above, pos=0.8, font=\scriptsize\itshape] {Auth Check} (auth.west);
+    \path [flow] (gateway.east) -- node [above, pos=0.6, font=\scriptsize\itshape] {Encrypt / Split} (crypto.west);
+    \path [flow] ($(gateway.east) - (0, 0.2cm)$) |- node [below, pos=0.8, font=\scriptsize\itshape] {Stego Embed} (stego.west);
+
+    % Cryptographic Key to Stego Connection (Internal orchestration)
+    \path [flow_accent] (crypto) -- node [left, font=\scriptsize, text=orange!90!black] {Key Shards} (stego);
+    \path [flow_accent] (auth) -- node [left, font=\scriptsize, text=orange!90!black] {Session OK} (crypto);
+
+    % External API connections
+    \path [flow_bi] (auth) -- (gemini);
+    \path [flow_bi] (stego) -- (groq);
+
+    % Secondary direct engine loopback to DB for signing/logging
+    \path [flow] (stego.south) |- ($(stego.south) - (0.5cm, 0.8cm)$) -| (db.east);
+
+    % =========================================================================
+    % 3. GROUP BOUNDARIES & ANNOTATIONS
+    % =========================================================================
+    \begin{scope}[on background layer]
+        \node [draw=teal!30, fill=teal!2, dashed, inner sep=12pt, rounded corners=8pt, 
+               fit=(auth) (crypto) (stego)] (logical_core) {};
+        \node [anchor=north, font=\sffamily\bfseries\scriptsize, text=teal!80!black] 
+               at (logical_core.north) {MODULAR SECURITY CORE SERVICE LAYER};
+    \end{scope}
+
+\end{tikzpicture}
+\end{document}

@@ -4,6 +4,17 @@ import './Sidebar.css';
 import { API_BASE_URL } from '../config';
 
 function Sidebar({ onLogout, userName, profilePicture }) {
+  const getProfileImageUrl = (path) => {
+    const value = String(path || '').trim();
+    if (!value) return '';
+    if (/^(https?:|data:|blob:)/i.test(value)) return value;
+    const normalized = value.replace(/^\/+/, '');
+    const base = String(API_BASE_URL || '').replace(/\/+$/, '');
+    return base ? `${base}/${normalized}` : `/${normalized}`;
+  };
+
+  const profileImageUrl = getProfileImageUrl(profilePicture);
+
   const menuItems = [
     { path: '/dashboard', icon: '◈', label: 'Dashboard' },
     { path: '/biometric/face', icon: '◉', label: 'Face Recognition' },
@@ -47,13 +58,11 @@ function Sidebar({ onLogout, userName, profilePicture }) {
       <div className="sidebar-footer">
         <div className="user-info">
           <div className="user-avatar">
-            {profilePicture ? (
-              <img
-                src={`${API_BASE_URL}/${String(profilePicture).replace(/^\/+/, '')}`}
-                alt="Profile"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-              />
-            ) : '👤'}
+            {profileImageUrl ? (
+              <img src={profileImageUrl} alt="Profile" />
+            ) : (
+              <span className="user-avatar-fallback">👤</span>
+            )}
           </div>
           <div className="user-details">
             <span className="user-name">{userName || 'Agent'}</span>
@@ -61,7 +70,7 @@ function Sidebar({ onLogout, userName, profilePicture }) {
           </div>
         </div>
         <button className="logout-btn" onClick={onLogout}>
-          <span>←</span> Logout
+          <span aria-hidden="true">←</span> Logout
         </button>
       </div>
     </aside>

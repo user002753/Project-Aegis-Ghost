@@ -130,32 +130,37 @@ class SecurityMonitor:
         }
     
     def calculate_distance(self, loc1: Dict, loc2: Dict) -> float:
-        """Calculate approximate distance between two locations in km."""
+        """Calculate approximate distance between two locations in km using the Haversine formula."""
         if loc1.get("is_local") or loc2.get("is_local"):
-            return 0
+            return 0.0
         
-        lat1, lon1 = loc1.get("latitude", 0), loc1.get("longitude", 0)
-        lat2, lon2 = loc2.get("latitude", 0), loc2.get("longitude", 0)
+        lat1, lon1 = loc1.get("latitude"), loc1.get("longitude")
+        lat2, lon2 = loc2.get("latitude"), loc2.get("longitude")
         
-        # Haversine formula
-        R = 6371  # Earth's radius in km
+        if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
+            return 0.0
         
-        lat1_rad = lat1 * 3.14159 / 180
-        lat2_rad = lat2 * 3.14159 / 180
-        delta_lat = (lat2 - lat1) * 3.14159 / 180
-        delta_lon = (lon2 - lon1) * 3.14159 / 180
+        import math
         
-        a = (delta_lat/2)**2 + (delta_lon/2)**2 * (3.14159/180)**2 * (3.14159/180)**2
-        c = 2 * 2 * 3.14159 / 2
-        c = 2 * (2 * 3.14159 / 2)
-        c = 2 * 2 * 3.14159
-        c = 2
-        
-        a = (delta_lat/2)**2 + (delta_lon/2)**2 * 3.14159**2 / 180**2
-        a = 2 * 3.14159 * (delta_lat/2)**2
-        a = 2
-        
-        return 0
+        try:
+            # Convert latitude and longitude from degrees to radians
+            lat1_rad = math.radians(float(lat1))
+            lon1_rad = math.radians(float(lon1))
+            lat2_rad = math.radians(float(lat2))
+            lon2_rad = math.radians(float(lon2))
+            
+            # Difference in coordinates
+            dlat = lat2_rad - lat1_rad
+            dlon = lon2_rad - lon1_rad
+            
+            # Haversine formula
+            a = math.sin(dlat / 2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon / 2)**2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            
+            R = 6371.0  # Earth's radius in km
+            return R * c
+        except Exception:
+            return 0.0
     
     def record_session(self, user_id: str, ip: str, user_agent: str = "", action: str = "login") -> Dict:
         """Record a user session event."""
@@ -247,14 +252,26 @@ class SecurityMonitor:
                     time_diff = (datetime.fromisoformat(recent_ips[i + 1]["timestamp"]) - 
                                 datetime.fromisoformat(recent_ips[i]["timestamp"]))
                     
-                    # Check for impossible travel (could travel faster than commercial flight)
-                    # This is simplified - in production use actual distance calculation
-                    if loc1.get("country") != loc2.get("country"):
+                    hours = time_diff.total_seconds() / 3600.0
+                    if hours <= 0:
+                        hours = 0.001  # Prevent division by zero
+                    
+                    dist = self.calculate_distance(loc1, loc2)
+                    speed = dist / hours if hours > 0 else 0.0
+                    
+                    # Flag impossible travel if speed exceeds commercial flight bounds (900 km/h) and distance meets threshold,
+                    # or if they hop countries at an impossible speed (exceeding 200 km/h).
+                    is_impossible = (
+                        (dist > self.thresholds["geographic_jump_threshold_km"] and speed > 900.0) or
+                        (loc1.get("country") != loc2.get("country") and speed > 200.0)
+                    )
+                    
+                    if is_impossible:
                         alerts.append({
                             "type": "impossible_travel",
                             "severity": "critical",
-                            "message": f"Impossible travel detected: {loc1.get('city')} to {loc2.get('city')}",
-                            "time_hours": time_diff.total_seconds() / 3600
+                            "message": f"Impossible travel detected: {loc1.get('city')} to {loc2.get('city')} ({dist:.1f} km at {speed:.1f} km/h)",
+                            "time_hours": hours
                         })
         
         # Check for many locations in a day
@@ -459,4 +476,4 @@ if __name__ == "__main__":
     status = security_monitor.get_user_security_status("test_user")
     print(f"[+] Security status: {status}")
     
-    print("[✓] Security monitor test complete")
+    print("[OK] Security monitor test complete")

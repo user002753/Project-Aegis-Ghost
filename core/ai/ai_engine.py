@@ -23,6 +23,8 @@ def _get_env(name: str, default: str | None = None) -> str | None:
     alias_map = {
         "RAPHAEL_API_KEY": ["RAPHAEL_TOKEN", "RAPHAEL_KEY", "RAPHAEL_API_TOKEN"],
         "PEXELS_API_KEY": ["PEXELS_KEY", "PEXELS_TOKEN", "PEXELS_API_TOKEN"],
+        "LEONARDO_API_KEY": ["LEONARDO_KEY", "LEONARDO_TOKEN", "LEONARDO_API_TOKEN"],
+        "DEEPAI_API_KEY": ["DEEPAI_KEY", "DEEPAI_TOKEN"],
     }
     val = os.getenv(name)
     if val:
@@ -425,7 +427,15 @@ def _generate_with_pollinations(prompt: str, size=(512, 512), model_variant: str
     if last_img is not None:
         return _colorize_grayscale_fallback(last_img)
 
-    # Provider outage fallback: keep pipeline operational with vivid local render.
+    # Provider outage fallback: keep pipeline operational with Leonardo fallback or vivid local render.
+    has_leonardo = _get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN") or _get_env("LEONARDO_API_TOKEN")
+    if has_leonardo:
+        try:
+            print(f"[*] Pollinations failed: {last_error}. Falling back to Leonardo AI API...")
+            return _generate_with_leonardo(prompt, size=size)
+        except Exception as leo_err:
+            print(f"[!] Leonardo AI fallback failed: {leo_err}")
+
     if (_get_env("POLLINATIONS_ALLOW_LOCAL_FALLBACK", "true") or "true").strip().lower() in ("1", "true", "yes", "on"):
         return _generate_mock(_build_color_rich_prompt(prompt), size=size)
 
@@ -1014,9 +1024,9 @@ def _generate_with_llm_realistic(prompt: str, size=(512, 512)) -> Image.Image:
             return _generate_with_raphael(enriched, size=size)
         except Exception as e:
             last_error = e
-    if _get_env("PEXELS_API_KEY"):
+    if _get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN"):
         try:
-            return _generate_with_pexels(enriched, size=size)
+            return _generate_with_leonardo(enriched, size=size)
         except Exception as e:
             last_error = e
     if _get_env("GEMINI_API_KEY"):
@@ -1074,207 +1084,244 @@ def generate_ghost_carrier(
             pollinations_variant = "turbo"
             chosen = "pollinations"
     
+    img = None
+    last_error = None
+
     if chosen == "mock" or (chosen is None and use_mock):
         print(f"[*] Generating mock carrier image for: {prompt[:60]}...")
         img = _generate_mock(prompt, size=size)
-    elif chosen == "genai":
-        print(f"[*] Using Google GenAI for: {prompt[:60]}...")
-        img = _generate_with_genai(prompt, size=size)
-    elif chosen == "llm":
-        print(f"[*] Using LLM-guided local engine for: {prompt[:60]}...")
-        img = _generate_with_llm_engine(prompt, size=size)
-    elif chosen in ("llm-realistic", "llm_realistic", "realistic"):
-        print(f"[*] Using LLM-guided realistic engine for: {prompt[:60]}...")
-        img = _generate_with_llm_realistic(prompt, size=size)
-    elif chosen == "openai":
-        print(f"[*] Using OpenAI Images API for: {prompt[:60]}...")
-        img = _generate_with_openai(prompt, size=size)
-    elif chosen == "openrouter":
-        print(f"[*] Using OpenRouter Responses API for: {prompt[:60]}...")
-        img = _generate_with_openrouter(prompt, size=size)
-    elif chosen == "puter":
-        print(f"[*] Using Puter image API for: {prompt[:60]}...")
-        img = _generate_with_puter(prompt, size=size)
-    elif chosen == "hf":
-        print(f"[*] Using Hugging Face API for: {prompt[:60]}...")
-        img = _generate_with_huggingface(prompt, size=size)
-    elif chosen == "replicate":
-        print(f"[*] Using Replicate API for: {prompt[:60]}...")
-        img = _generate_with_replicate(prompt, size=size)
-    elif chosen == "gemini":
-        print(f"[*] Using Gemini API for: {prompt[:60]}...")
-        img = _generate_gemini(prompt, size=size)
-    elif chosen == "pollinations":
-        print(f"[*] Using Pollinations AI for: {prompt[:60]}...")
-        img = _generate_with_pollinations(prompt, size=size, model_variant=pollinations_variant)
-    elif chosen == "pexels":
-        print(f"[*] Using Pexels for: {prompt[:60]}...")
-        img = _generate_with_pexels(prompt, size=size)
-    elif chosen == "raphael":
-        print(f"[*] Using Raphael AI for: {prompt[:60]}...")
-        img = _generate_with_raphael(prompt, size=size)
-    elif chosen == "leonardo":
-        print(f"[*] Using Leonardo AI for: {prompt[:60]}...")
-        img = _generate_with_leonardo(prompt, size=size)
-    elif chosen == "deepai":
-        print(f"[*] Using DeepAI API for: {prompt[:60]}...")
-        img = _generate_with_deepai(prompt, size=size)
     else:
-        # Try preferred providers in order, with fallback on failure
-        print(f"[*] Auto-selecting backend...")
-        img = None
-        last_error = None
-        
-        # Priority 1: OpenRouter image generation.
-        if _get_env("OPENROUTER_API_KEY"):
-            try:
-                print(f"[*] Trying OpenRouter API for: {prompt[:60]}...")
-                img = _generate_with_openrouter(prompt, size=size)
-                print(f"[SUCCESS] OpenRouter generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] OpenRouter failed: {e}, trying next provider...")
-
-        # Priority 2: OpenAI image generation.
-        if img is None and _get_env("PUTER_API_KEY"):
-            try:
-                print(f"[*] Trying Puter API for: {prompt[:60]}...")
-                img = _generate_with_puter(prompt, size=size)
-                print(f"[SUCCESS] Puter generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] Puter failed: {e}, trying next provider...")
-
-        # Priority 3: OpenAI image generation.
-        if img is None and _get_env("OPENAI_API_KEY"):
-            try:
-                print(f"[*] Trying OpenAI API for: {prompt[:60]}...")
-                img = _generate_with_openai(prompt, size=size)
-                print(f"[SUCCESS] OpenAI generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] OpenAI failed: {e}, trying next provider...")
-
-        # Priority 4: Raphael
-        if img is None and _get_env("RAPHAEL_API_KEY"):
-            try:
-                print(f"[*] Trying Raphael API for: {prompt[:60]}...")
-                img = _generate_with_raphael(prompt, size=size)
-                print(f"[SUCCESS] Raphael generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] Raphael failed: {e}, trying next provider...")
-
-        # Priority 5: Leonardo
-        if img is None and _get_env("LEONARDO_API_KEY"):
-            try:
-                print(f"[*] Trying Leonardo API for: {prompt[:60]}...")
+        try:
+            if chosen == "genai":
+                print(f"[*] Using Google GenAI for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_genai, prompt, size=size)
+            elif chosen == "llm":
+                print(f"[*] Using LLM-guided local engine for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_llm_engine, prompt, size=size)
+            elif chosen in ("llm-realistic", "llm_realistic", "realistic"):
+                print(f"[*] Using LLM-guided realistic engine for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_llm_realistic, prompt, size=size)
+            elif chosen == "openai":
+                print(f"[*] Using OpenAI Images API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_openai, prompt, size=size)
+            elif chosen == "openrouter":
+                print(f"[*] Using OpenRouter Responses API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_openrouter, prompt, size=size)
+            elif chosen == "puter":
+                print(f"[*] Using Puter image API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_puter, prompt, size=size)
+            elif chosen == "hf":
+                print(f"[*] Using Hugging Face API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_huggingface, prompt, size=size)
+            elif chosen == "replicate":
+                print(f"[*] Using Replicate API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_replicate, prompt, size=size)
+            elif chosen == "gemini":
+                print(f"[*] Using Gemini API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_gemini, prompt, size=size)
+            elif chosen == "pollinations":
+                print(f"[*] Using Pollinations AI for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_pollinations, prompt, size=size, model_variant=pollinations_variant)
+            elif chosen == "pexels":
+                print(f"[*] Using Pexels for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_pexels, prompt, size=size)
+            elif chosen == "raphael":
+                print(f"[*] Using Raphael AI for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_raphael, prompt, size=size)
+            elif chosen == "leonardo":
+                print(f"[*] Using Leonardo AI for: {prompt[:60]}...")
                 img = _generate_with_leonardo(prompt, size=size)
-                print(f"[SUCCESS] Leonardo generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] Leonardo failed: {e}, trying next provider...")
-
-        # Priority 6: Pexels photo retrieval
-        if img is None and _get_env("PEXELS_API_KEY"):
-            try:
-                print(f"[*] Trying Pexels for: {prompt[:60]}...")
-                img = _generate_with_pexels(prompt, size=size)
-                print(f"[SUCCESS] Pexels returned an image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] Pexels failed: {e}, trying next provider...")
-
-        # Priority 7: Pollinations (free, reliable)
-        if img is None:
-            try:
-                print(f"[*] Trying Pollinations AI for: {prompt[:60]}...")
-                img = _generate_with_pollinations(prompt, size=size)
-                print(f"[SUCCESS] Pollinations generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] Pollinations failed: {e}, trying next provider...")
+            elif chosen == "deepai":
+                print(f"[*] Using DeepAI API for: {prompt[:60]}...")
+                img = _generate_with_leonardo_fallback(_generate_with_deepai, prompt, size=size)
+            else:
+                # Try preferred providers in order, with fallback on failure
+                print(f"[*] Auto-selecting backend...")
+                img = None
+                
+                # Priority 1: OpenRouter image generation.
+                if _get_env("OPENROUTER_API_KEY"):
+                    try:
+                        print(f"[*] Trying OpenRouter API for: {prompt[:60]}...")
+                        img = _generate_with_openrouter(prompt, size=size)
+                        print(f"[SUCCESS] OpenRouter generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] OpenRouter failed: {e}, trying next provider...")
         
-        # Priority 8: DeepAI (may require paid subscription)
-        if img is None and _get_env("DEEPAI_API_KEY"):
-            try:
-                print(f"[*] Trying DeepAI API for: {prompt[:60]}...")
-                img = _generate_with_deepai(prompt, size=size)
-                print(f"[SUCCESS] DeepAI generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] DeepAI failed: {e}, trying next provider...")
+                # Priority 2: Puter image generation.
+                if img is None and _get_env("PUTER_API_KEY"):
+                    try:
+                        print(f"[*] Trying Puter API for: {prompt[:60]}...")
+                        img = _generate_with_puter(prompt, size=size)
+                        print(f"[SUCCESS] Puter generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] Puter failed: {e}, trying next provider...")
         
-        # Priority 9: LLM-guided realistic engine (real providers, no mock)
-        if img is None and (
-            _get_env("GROQ_API_KEY")
-            or _get_env("OPENROUTER_API_KEY")
-            or _get_env("OPENAI_API_KEY")
-            or _get_env("GEMINI_API_KEY")
-        ):
-            try:
-                print(f"[*] Trying LLM-guided realistic engine for: {prompt[:60]}...")
-                img = _generate_with_llm_realistic(prompt, size=size)
-                print(f"[SUCCESS] LLM realistic engine generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] LLM realistic engine failed: {e}, trying next provider...")
-
-        # Priority 10: LLM-guided local engine
-        if img is None and (
-            _get_env("GROQ_API_KEY")
-            or _get_env("OPENROUTER_API_KEY")
-            or _get_env("OPENAI_TEXT_MODEL")
-            or _get_env("GEMINI_TEXT_MODEL")
-        ):
-            try:
-                print(f"[*] Trying LLM-guided local engine for: {prompt[:60]}...")
-                img = _generate_with_llm_engine(prompt, size=size)
-                print(f"[SUCCESS] LLM engine generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] LLM engine failed: {e}, trying next provider...")
+                # Priority 3: OpenAI image generation.
+                if img is None and _get_env("OPENAI_API_KEY"):
+                    try:
+                        print(f"[*] Trying OpenAI API for: {prompt[:60]}...")
+                        img = _generate_with_openai(prompt, size=size)
+                        print(f"[SUCCESS] OpenAI generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] OpenAI failed: {e}, trying next provider...")
         
-        # Priority 11: HuggingFace
-        if img is None and _get_env("HF_API_TOKEN"):
-            try:
-                print(f"[*] Trying HuggingFace API for: {prompt[:60]}...")
-                img = _generate_with_huggingface(prompt, size=size)
-                print(f"[SUCCESS] HuggingFace generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] HuggingFace failed: {e}, trying next provider...")
+                # Priority 4: Raphael
+                if img is None and _get_env("RAPHAEL_API_KEY"):
+                    try:
+                        print(f"[*] Trying Raphael API for: {prompt[:60]}...")
+                        img = _generate_with_raphael(prompt, size=size)
+                        print(f"[SUCCESS] Raphael generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] Raphael failed: {e}, trying next provider...")
         
-        # Priority 12: Replicate
-        if img is None and _get_env("REPLICATE_API_TOKEN"):
-            try:
-                print(f"[*] Trying Replicate API for: {prompt[:60]}...")
-                img = _generate_with_replicate(prompt, size=size)
-                print(f"[SUCCESS] Replicate generated image")
-            except Exception as e:
-                last_error = e
-                print(f"[!] Replicate failed: {e}, trying next provider...")
+                # Priority 5: Leonardo (backup when Raphael fails or unavailable)
+                if img is None and (_get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN")):
+                    try:
+                        print(f"[*] Trying Leonardo API for: {prompt[:60]}...")
+                        img = _generate_with_leonardo(prompt, size=size)
+                        print(f"[SUCCESS] Leonardo generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] Leonardo failed: {e}, trying next provider...")
         
-        # Final fallback: Mock generator (only if explicitly allowed).
-        if img is None:
-            if not allow_fallback:
-                raise RuntimeError(f"All providers failed in auto mode. Last error: {last_error}")
-            print(f"[!] All providers failed. Last error: {last_error}")
-            print(f"[*] Using mock generator (note: mock does not interpret prompts)")
-            img = _generate_mock(prompt, size=size)
+                # Priority 6: Pexels photo retrieval
+                if img is None and _get_env("PEXELS_API_KEY"):
+                    try:
+                        print(f"[*] Trying Pexels for: {prompt[:60]}...")
+                        img = _generate_with_pexels(prompt, size=size)
+                        print(f"[SUCCESS] Pexels returned an image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] Pexels failed: {e}, trying next provider...")
+        
+                # Priority 7: Pollinations (free, reliable)
+                if img is None:
+                    try:
+                        print(f"[*] Trying Pollinations AI for: {prompt[:60]}...")
+                        img = _generate_with_pollinations(prompt, size=size)
+                        print(f"[SUCCESS] Pollinations generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] Pollinations failed: {e}, trying next provider...")
+                
+                # Priority 8: DeepAI (may require paid subscription)
+                if img is None and _get_env("DEEPAI_API_KEY"):
+                    try:
+                        print(f"[*] Trying DeepAI API for: {prompt[:60]}...")
+                        img = _generate_with_deepai(prompt, size=size)
+                        print(f"[SUCCESS] DeepAI generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] DeepAI failed: {e}, trying next provider...")
+                
+                # Priority 9: LLM-guided realistic engine (real providers, no mock)
+                if img is None and (
+                    _get_env("GROQ_API_KEY")
+                    or _get_env("OPENROUTER_API_KEY")
+                    or _get_env("OPENAI_API_KEY")
+                    or _get_env("GEMINI_API_KEY")
+                ):
+                    try:
+                        print(f"[*] Trying LLM-guided realistic engine for: {prompt[:60]}...")
+                        img = _generate_with_llm_realistic(prompt, size=size)
+                        print(f"[SUCCESS] LLM realistic engine generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] LLM realistic engine failed: {e}, trying next provider...")
+        
+                # Priority 10: LLM-guided local engine
+                if img is None and (
+                    _get_env("GROQ_API_KEY")
+                    or _get_env("OPENROUTER_API_KEY")
+                    or _get_env("OPENAI_TEXT_MODEL")
+                    or _get_env("GEMINI_TEXT_MODEL")
+                ):
+                    try:
+                        print(f"[*] Trying LLM-guided local engine for: {prompt[:60]}...")
+                        img = _generate_with_llm_engine(prompt, size=size)
+                        print(f"[SUCCESS] LLM engine generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] LLM engine failed: {e}, trying next provider...")
+                
+                # Priority 11: HuggingFace
+                if img is None and _get_env("HF_API_TOKEN"):
+                    try:
+                        print(f"[*] Trying HuggingFace API for: {prompt[:60]}...")
+                        img = _generate_with_huggingface(prompt, size=size)
+                        print(f"[SUCCESS] HuggingFace generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] HuggingFace failed: {e}, trying next provider...")
+                
+                # Priority 12: Replicate
+                if img is None and _get_env("REPLICATE_API_TOKEN"):
+                    try:
+                        print(f"[*] Trying Replicate API for: {prompt[:60]}...")
+                        img = _generate_with_replicate(prompt, size=size)
+                        print(f"[SUCCESS] Replicate generated image")
+                    except Exception as e:
+                        last_error = e
+                        print(f"[!] Replicate failed: {e}, trying next provider...")
+                
+                if img is None:
+                    raise RuntimeError(f"All providers failed in auto mode. Last error: {last_error}")
+        except Exception as e:
+            last_error = e
+            print(f"[!] Chosen provider or auto-selection failed: {e}")
+            
+            # Check if Leonardo AI API key is configured and try to fall back to it
+            has_leonardo = _get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN") or _get_env("LEONARDO_API_TOKEN")
+            if allow_fallback and has_leonardo and chosen != "leonardo":
+                try:
+                    print(f"[*] Falling back to Leonardo AI API for: {prompt[:60]}...")
+                    img = _generate_with_leonardo(prompt, size=size)
+                    print(f"[SUCCESS] Leonardo AI generated image as fallback")
+                except Exception as leo_err:
+                    print(f"[!] Leonardo AI fallback failed: {leo_err}")
+                    last_error = leo_err
+            
+            if img is None:
+                if not allow_fallback:
+                    raise RuntimeError(f"All providers failed. Last error: {last_error}")
+                print(f"[!] All providers failed. Last error: {last_error}")
+                print(f"[*] Using mock generator (note: mock does not interpret prompts)")
+                img = _generate_mock(prompt, size=size)
 
     img.save(save_path)
     print(f"[*] Carrier image saved to: {save_path}")
     return img
 
 
+def _generate_with_leonardo_fallback(func, prompt: str, size=(512, 512), *args, **kwargs):
+    """Executes the specified image generation function. If it fails (raises an exception),
+    it falls back to Leonardo AI API if configured, before re-raising or failing."""
+    try:
+        return func(prompt, size=size, *args, **kwargs)
+    except Exception as e:
+        # Check if Leonardo AI API key is configured
+        has_leonardo = _get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN") or _get_env("LEONARDO_API_TOKEN")
+        if has_leonardo and func.__name__ != "_generate_with_leonardo":
+            try:
+                print(f"[*] {func.__name__} failed: {e}. Falling back to Leonardo AI API...")
+                return _generate_with_leonardo(prompt, size=size)
+            except Exception as leo_err:
+                print(f"[!] Leonardo AI fallback failed: {leo_err}")
+        raise
+
+
 def _generate_with_leonardo(prompt: str, size=(512, 512)) -> Image.Image:
     """
     Generate image using Leonardo AI REST API.
     """
-    api_key = _get_env("LEONARDO_API_KEY")
+    api_key = _get_env("LEONARDO_API_KEY") or _get_env("LEONARDO_KEY") or _get_env("LEONARDO_TOKEN") or _get_env("LEONARDO_API_TOKEN")
     if not api_key:
-        raise ValueError("LEONARDO_API_KEY not set")
+        raise ValueError("LEONARDO_API_KEY not set. Set LEONARDO_API_KEY (or LEONARDO_KEY/LEONARDO_TOKEN) in your .env file.")
 
     width = int(size[0]) if size else 512
     height = int(size[1]) if size else 512
@@ -1290,48 +1337,58 @@ def _generate_with_leonardo(prompt: str, size=(512, 512)) -> Image.Image:
         "content-type": "application/json",
     }
 
+    prompt_for_model = _build_photoreal_prompt(prompt)
     payload = {
-        "prompt": _build_photoreal_prompt(prompt),
+        "prompt": prompt_for_model,
         "modelId": model_id,
         "width": width,
         "height": height,
         "num_images": 1,
     }
 
-    create = requests.post(f"{endpoint}/generations", headers=headers, json=payload, timeout=90)
-    if create.status_code == 401:
-        raise ValueError("Leonardo API error: invalid API key")
-    create.raise_for_status()
-    create_data = create.json()
-    gen_id = (
-        ((create_data.get("sdGenerationJob") or {}).get("generationId"))
-        or create_data.get("generationId")
-    )
-    if not gen_id:
-        raise ValueError(f"Leonardo response missing generationId: {create_data}")
+    last_error = None
+    try:
+        create = requests.post(f"{endpoint}/generations", headers=headers, json=payload, timeout=90)
+        if create.status_code == 401:
+            raise ValueError("Leonardo API error: invalid API key - verify LEONARDO_API_KEY in .env")
+        if create.status_code == 403:
+            raise ValueError(f"Leonardo API forbidden - check API key permissions or account status")
+        create.raise_for_status()
+        create_data = create.json()
+        gen_id = (
+            ((create_data.get("sdGenerationJob") or {}).get("generationId"))
+            or create_data.get("generationId")
+        )
+        if not gen_id:
+            raise ValueError(f"Leonardo response missing generationId: {create_data}")
 
-    image_url = None
-    for _ in range(20):
-        time.sleep(2.0)
-        status = requests.get(f"{endpoint}/generations/{gen_id}", headers=headers, timeout=60)
-        status.raise_for_status()
-        data = status.json()
-        gen = data.get("generations_by_pk") or {}
-        imgs = gen.get("generated_images") or []
-        if imgs:
-            image_url = imgs[0].get("url")
-            if image_url:
-                break
+        image_url = None
+        for _ in range(40):
+            time.sleep(1.0)
+            status = requests.get(f"{endpoint}/generations/{gen_id}", headers=headers, timeout=60)
+            status.raise_for_status()
+            data = status.json()
+            gen = data.get("generations_by_pk") or {}
+            imgs = gen.get("generated_images") or []
+            if imgs:
+                image_url = imgs[0].get("url")
+                if image_url:
+                    break
 
-    if not image_url:
-        raise ValueError("Leonardo generation did not produce an image URL in time")
+        if not image_url:
+            raise ValueError("Leonardo generation did not produce an image URL in time")
 
-    resp = requests.get(image_url, timeout=60)
-    resp.raise_for_status()
-    img = Image.open(io.BytesIO(resp.content)).convert("RGB")
-    if size:
-        img = img.resize(size, Image.Resampling.LANCZOS)
-    return img
+        resp = requests.get(image_url, timeout=60)
+        resp.raise_for_status()
+        img = Image.open(io.BytesIO(resp.content)).convert("RGB")
+        if _is_effectively_grayscale(img):
+            img = _colorize_grayscale_fallback(img)
+        if size:
+            img = img.resize(size, Image.Resampling.LANCZOS)
+        return img
+    except Exception as e:
+        last_error = e
+        raise ValueError(f"Leonardo generation failed: {e}")
 
 
 def _generate_with_deepai(prompt: str, size=(512, 512)) -> Image.Image:
@@ -1520,9 +1577,9 @@ if __name__ == "__main__":
         print(f"\n--- Test {i+1}: {prompt} ---")
         img = _generate_mock(prompt, (256, 256))
         img.save(f"test_mock_{i+1}_{prompt.split()[0]}.png")
-        print(f"[✓] Saved: test_mock_{i+1}_{prompt.split()[0]}.png")
+        print(f"[OK] Saved: test_mock_{i+1}_{prompt.split()[0]}.png")
     
-    print("\n[✓] All tests passed!")
+    print("\n[PASS] All tests passed!")
 
 
 def recommend_prompts_with_genai(n: int = 10, user_theme: str = "Abstract artistic security visualization") -> List[str]:

@@ -16,6 +16,7 @@ import hashlib
 import secrets
 import base64
 from PIL import Image
+import struct
 from typing import List, Tuple, Optional, Dict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from Cryptodome.Cipher import AES
@@ -141,6 +142,24 @@ class RussianDollSteganography:
         plaintext = cipher.decrypt_and_verify(ciphertext, tag)
         return plaintext.decode('utf-8')
     
+    def _decrypt_real_secret_with_key(self, ciphertext: bytes, key: bytes, nonce_tag: bytes) -> str:
+        """Decrypt the REAL secret using a pre-reconstructed key."""
+        nonce = nonce_tag[:12]
+        tag = nonce_tag[12:]
+        cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+        plaintext = cipher.decrypt_and_verify(ciphertext, tag)
+        return plaintext.decode('utf-8')
+    
+    def _decrypt_real_secret_with_key_hex(self, hex_data: str, key: bytes) -> str:
+        """Decrypt hex-encoded encrypted secret using a pre-reconstructed key."""
+        combined = bytes.fromhex(hex_data)
+        nonce = combined[:12]
+        tag = combined[12:28]
+        ciphertext = combined[28:]
+        cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+        plaintext = cipher.decrypt_and_verify(ciphertext, tag)
+        return plaintext.decode('utf-8')
+    
     def _embed_lsb(self, img_array: np.ndarray, data: bytes) -> np.ndarray:
         """Embed data in LSB of red and green channels only (leaving blue for DWT layer)."""
         # Convert data to bits
@@ -211,79 +230,144 @@ class RussianDollSteganography:
         return np.packbits(data_bits).tobytes()
     
     def _embed_dwt(self, img_array: np.ndarray, data: bytes) -> np.ndarray:
-        """Embed data in DWT coefficients (deeper, hidden layer).
+        """Embed data in DWT coefficients of the Blue channel using 2D Haar DWT and QIM."""
+        # Perform DWT on the Blue channel
+        blue = img_array[:, :, 2].astype(np.float64)
+        coeffs = pywt.dwt2(blue, 'haar')
+        LL, (LH, HL, HH) = coeffs
         
-        Uses a more robust approach: embed in least significant bits of
-        blue channel pixels, but in a way that's less visually noticeable.
+        # Format bits to embed: [4-byte length prefix][data]
+        blob = struct.pack(">I", len(data)) + data
+        bits = np.unpackbits(np.frombuffer(blob, dtype=np.uint8))
         
-        For hex-encoded data, we embed the raw bytes (which represent hex string as UTF-8).
-        """
-        result = img_array.copy()
+        hh_shape = HH.shape
+        HH_flat = HH.flatten()
         
-        # Convert data to bits
-        data_bits = np.unpackbits(np.frombuffer(data, dtype=np.uint8))
-        
-        # Store length in first 32 bits
-        length_bits = np.unpackbits(np.array([len(data)], dtype=np.uint32).view(np.uint8))
-        
-        # Total bits to embed
-        total_bits = np.concatenate([length_bits, data_bits])
-        
-        # Guard against overflow
-        if len(total_bits) > result[:, :, 2].flatten().size:
-            # Truncate data if too large
-            max_bits = result[:, :, 2].flatten().size - 32
-            total_bits = total_bits[:32 + max_bits]
-        
-        # Embed in blue channel's lower bits (bits 0-1 of each byte)
-        # This is less noticeable than full LSB replacement
-        flat = result[:, :, 2].flatten()
-        
-        for i in range(len(total_bits)):
-            if i >= len(flat):
-                break
+        if bits.size > HH_flat.size:
+            max_bytes = max((HH_flat.size // 8) - 4, 0)
+            raise ValueError(f"Secret too large for DWT capacity ({max_bytes} bytes)")
             
-            if total_bits[i] == 1:
-                flat[i] = flat[i] | 1  # Set LSB to 1
-            else:
-                flat[i] = flat[i] & 0xFE  # Set LSB to 0
+        DELTA = 16.0
         
-        result[:, :, 2] = flat.reshape(result[:, :, 2].shape)
+        # Embed bits in HH using QIM
+        for i in range(bits.size):
+            bit = bits[i]
+            val = HH_flat[i]
+            q = np.round(val / DELTA)
+            if q % 2 != bit:
+                if val >= q * DELTA:
+                    q += 1
+                else:
+                    q -= 1
+            HH_flat[i] = q * DELTA
+            
+        HH = HH_flat.reshape(hh_shape)
         
+        # Reconstruct Blue channel using IDWT
+        blue_rec = pywt.idwt2((LL, (LH, HL, HH)), 'haar')
+        blue_rec_uint8 = np.clip(np.round(blue_rec), 0, 255).astype(np.uint8)
+        
+        # Spatial-domain correction loop to ensure perfect recovery
+        h, w = blue_rec_uint8.shape
+        for i in range(bits.size):
+            r = i // hh_shape[1]
+            c = i % hh_shape[1]
+            if 2*r+1 >= h or 2*c+1 >= w:
+                continue
+                
+            bit = bits[i]
+            max_attempts = 15
+            for attempt in range(max_attempts):
+                A = float(blue_rec_uint8[2*r, 2*c])
+                B = float(blue_rec_uint8[2*r, 2*c+1])
+                C = float(blue_rec_uint8[2*r+1, 2*c])
+                D = float(blue_rec_uint8[2*r+1, 2*c+1])
+                
+                val = (A - B - C + D) / 2.0
+                q = np.round(val / DELTA)
+                extracted_bit = int(q % 2)
+                
+                if extracted_bit == bit:
+                    break
+                    
+                target_q = q
+                if val >= q * DELTA:
+                    target_q += 1 if (q+1)%2 == bit else -1
+                else:
+                    target_q += 1 if (q+1)%2 == bit else -1
+                    
+                target_val = target_q * DELTA
+                diff = target_val - val
+                step = int(np.sign(diff))
+                if step == 0:
+                    step = 1
+                    
+                if diff > 0:
+                    blue_rec_uint8[2*r, 2*c] = np.clip(blue_rec_uint8[2*r, 2*c] + step, 0, 255)
+                    blue_rec_uint8[2*r+1, 2*c+1] = np.clip(blue_rec_uint8[2*r+1, 2*c+1] + step, 0, 255)
+                    blue_rec_uint8[2*r, 2*c+1] = np.clip(blue_rec_uint8[2*r, 2*c+1] - step, 0, 255)
+                    blue_rec_uint8[2*r+1, 2*c] = np.clip(blue_rec_uint8[2*r+1, 2*c] - step, 0, 255)
+                else:
+                    blue_rec_uint8[2*r, 2*c] = np.clip(blue_rec_uint8[2*r, 2*c] - step, 0, 255)
+                    blue_rec_uint8[2*r+1, 2*c+1] = np.clip(blue_rec_uint8[2*r+1, 2*c+1] - step, 0, 255)
+                    blue_rec_uint8[2*r, 2*c+1] = np.clip(blue_rec_uint8[2*r, 2*c+1] + step, 0, 255)
+                    blue_rec_uint8[2*r+1, 2*c] = np.clip(blue_rec_uint8[2*r+1, 2*c] + step, 0, 255)
+                    
+        result = img_array.copy()
+        result[:, :, 2] = blue_rec_uint8
         return result
     
     def _extract_dwt(self, img_array: np.ndarray) -> bytes:
-        """Extract data from DWT layer (now uses blue channel LSB)."""
-        flat = img_array[:, :, 2].flatten()
+        """Extract data from DWT coefficients of the Blue channel using 2D Haar DWT."""
+        blue = img_array[:, :, 2].astype(np.float64)
+        coeffs = pywt.dwt2(blue, 'haar')
+        LL, (LH, HL, HH) = coeffs
         
-        # Extract length from first 32 bits
-        length_bits = []
+        HH_flat = HH.flatten()
+        DELTA = 16.0
+        
+        # Extract length prefix (first 32 bits)
+        header_bits = []
         for i in range(32):
-            if i >= len(flat):
+            if i >= len(HH_flat):
                 break
-            length_bits.append(flat[i] & 1)
-        
-        # Guard against excessively large lengths
-        max_size = len(flat) // 8
-        
-        try:
-            length = np.packbits(np.array(length_bits, dtype=np.uint8)).view(np.uint32)[0]
-        except:
-            return b''
-        
-        if length > max_size or length < 0:
-            return b''
-        
-        # Extract data - safe bounds check
-        data_bits = []
-        end_pos = min(32 + length * 8, len(flat))
-        for i in range(32, end_pos):
-            data_bits.append(flat[i] & 1)
-        
-        if not data_bits:
-            return b''
+            val = HH_flat[i]
+            q = np.round(val / DELTA)
+            header_bits.append(int(q % 2))
             
-        return np.packbits(np.array(data_bits, dtype=np.uint8)).tobytes()
+        if len(header_bits) < 32:
+            return b""
+            
+        header_bytes = np.packbits(np.array(header_bits, dtype=np.uint8)).tobytes()
+        length = struct.unpack(">I", header_bytes)[0]
+        
+        max_size = len(HH_flat) // 8
+        if length <= 0 or length > max_size:
+            # Fallback to direct blue LSB extraction if header is invalid
+            flat = img_array[:, :, 2].flatten()
+            length_bits = [flat[i] & 1 for i in range(32)]
+            try:
+                length = np.packbits(np.array(length_bits, dtype=np.uint8)).view(np.uint32)[0]
+            except Exception:
+                return b""
+            if length <= 0 or length > max_size:
+                return b""
+            data_bits = [flat[i] & 1 for i in range(32, min(32 + length * 8, len(flat)))]
+            return np.packbits(np.array(data_bits, dtype=np.uint8)).tobytes()
+            
+        # Extract actual payload bits
+        total_bits = (4 + length) * 8
+        if total_bits > len(HH_flat):
+            total_bits = len(HH_flat)
+            
+        data_bits = []
+        for i in range(32, total_bits):
+            val = HH_flat[i]
+            q = np.round(val / DELTA)
+            data_bits.append(int(q % 2))
+            
+        payload_bytes = np.packbits(np.array(data_bits, dtype=np.uint8)).tobytes()
+        return payload_bytes[:length]
     
     def create_fake_lsb_stego(self, image_path: str, decoy_message: str, output_path: str) -> str:
         """Create stego image with ONLY fake LSB data (for decoy)."""
@@ -345,6 +429,13 @@ class RussianDollSteganography:
         # Save
         stego_img = Image.fromarray(img_array.astype(np.uint8))
         stego_img.save(output_path)
+        
+        # Save DWT coefficients sidecar
+        blue = img_array[:, :, 2].astype(np.float64)
+        coeffs = pywt.dwt2(blue, 'haar')
+        _, (_, _, HH) = coeffs
+        coeff_path = output_path.replace('.png', '_coeff.npy')
+        np.save(coeff_path, HH)
         
         # Return metadata for extraction
         metadata = {
@@ -517,6 +608,13 @@ class RussianDollSteganography:
             )
             stego_img = Image.fromarray(img_array.astype(np.uint8))
             stego_img.save(img_path)
+            
+            # Save DWT coefficients sidecar
+            blue = img_array[:, :, 2].astype(np.float64)
+            coeffs = pywt.dwt2(blue, 'haar')
+            _, (_, _, HH) = coeffs
+            coeff_path = img_path.replace('.png', '_coeff.npy')
+            np.save(coeff_path, HH)
 
             return i, img_path, {
                 'image_path': img_path,
@@ -525,7 +623,7 @@ class RussianDollSteganography:
                 'theme': theme
             }
 
-        max_workers = max(2, min(6, num_shares))
+        max_workers = max(2, int(os.getenv("SHAMIR_STEGO_WORKERS", str(num_shares))))
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = [executor.submit(_build_share_image, i) for i in range(num_shares)]
             for future in as_completed(futures):
@@ -590,8 +688,18 @@ class RussianDollSteganography:
             raise ValueError(f"Only extracted {len(shares)} valid shares, need {threshold}")
         
         # Reconstruct the encryption key using Shamir's (first 16 bytes)
-        reconstructed_key = Shamir.combine(shares)
-        key = reconstructed_key[:16]  # Ensure 16 bytes for AES-128
+        try:
+            reconstructed_key = Shamir.combine(shares)
+            key = reconstructed_key[:16]  # Ensure 16 bytes for AES-128
+        except Exception as e:
+            raise ValueError(f"Failed to combine shares: {e}")
+            
+        # Verify that password derives the same key (enforcing password validation)
+        if password:
+            salt = b'aegis_ghost_salt'
+            expected_key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000, dklen=16)
+            if key != expected_key:
+                return "Extraction failed: Incorrect password or corrupted shares"
         
         # Now we need the ciphertext - it's stored in the manifest
         # For full reconstruction, we need to find the manifest
@@ -614,9 +722,8 @@ class RussianDollSteganography:
             # New format: hex-encoded ciphertext in manifest
             hex_encrypted = manifest['encrypted_hex']
             try:
-                # Decrypt with the PASSWORD (not the reconstructed key)
-                # The key was derived from password during encryption
-                secret = self._decrypt_real_secret_hex(hex_encrypted, password)
+                # Decrypt directly using the RECONSTRUCTED key (enforcing threshold constraint)
+                secret = self._decrypt_real_secret_with_key_hex(hex_encrypted, key)
                 return secret
             except Exception as e:
                 return f"Decryption failed: {str(e)}"
@@ -625,9 +732,9 @@ class RussianDollSteganography:
             ciphertext = bytes.fromhex(manifest['ciphertext'])
             nonce_tag = bytes.fromhex(manifest['nonce_tag'])
             
-            # Decrypt with the PASSWORD (not the reconstructed key)
+            # Decrypt directly using the RECONSTRUCTED key (enforcing threshold constraint)
             try:
-                secret = self._decrypt_real_secret(ciphertext, password, nonce_tag)
+                secret = self._decrypt_real_secret_with_key(ciphertext, key, nonce_tag)
                 return secret
             except Exception as e:
                 return f"Decryption failed: {str(e)}"
@@ -663,7 +770,7 @@ def test_russian_doll():
     fake_extracted = rds.extract_russian_doll(result['output_path'], password, layer='fake')
     print(f"[*] Extracted FAKE (from LSB): {fake_extracted}")
     
-    print("[✓] Russian Doll test complete!")
+    print("[PASS] Russian Doll test complete!")
     return True
 
 
@@ -681,7 +788,8 @@ def test_shamir_images():
         real_secret,
         password,
         num_shares=10,
-        threshold=6
+        threshold=6,
+        ai_backend='mock'
     )
     
     print(f"[*] Created {len(result['image_paths'])} share images")
@@ -698,7 +806,7 @@ def test_shamir_images():
     print(f"[*] Reconstructed secret: {reconstructed}")
     
     if reconstructed == real_secret:
-        print("[✓] Shamir's Secret Sharing test PASSED!")
+        print("[PASS] Shamir's Secret Sharing test PASSED!")
     else:
         print(f"[!] Reconstruction mismatch: {reconstructed} != {real_secret}")
     
@@ -708,4 +816,4 @@ def test_shamir_images():
 if __name__ == "__main__":
     test_russian_doll()
     test_shamir_images()
-    print("\n[✓] All steganography tests complete!")
+    print("\n[PASS] All steganography tests complete!")

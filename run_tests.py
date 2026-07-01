@@ -33,9 +33,14 @@ try:
     extracted = extract_data_dwt('test_stego.png', len(test_data))
     print(f"[PASS] Steganography embed/extract: {extracted == test_data}")
     # Cleanup
-    os.remove('test_temp.png')
-    os.remove('test_stego.png')
-    os.remove('test_stego_coeff.npy')
+    if os.path.exists('test_temp.png'):
+        os.remove('test_temp.png')
+    if os.path.exists('test_stego.png'):
+        os.remove('test_stego.png')
+    if os.path.exists('test_stego.png.steg.bin'):
+        os.remove('test_stego.png.steg.bin')
+    if os.path.exists('test_stego_coeff.npy'):
+        os.remove('test_stego_coeff.npy')
 except Exception as e:
     print(f"[FAIL] Steganography error: {e}")
 

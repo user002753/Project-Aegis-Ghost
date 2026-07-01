@@ -18,6 +18,7 @@ import CryptoAdvanced from './components/CryptoAdvanced';
 import ShamirStego from './features/shamir-stego/ShamirStego';
 import Login from './features/auth/Login';
 import ProtectedModule from './components/ProtectedModule';
+import { API_BASE_URL } from './config';
 import './styles/App.css';
 
 // Boot Animation Component
@@ -139,19 +140,56 @@ function App() {
   });
   const [booting, setBooting] = useState(true);
 
+  const normalizeUser = (payload) => ({
+    email: payload?.email || '',
+    name: payload?.name || '',
+    idNo: payload?.idNo || payload?.id_no || '',
+    profilePicture: payload?.profilePicture || payload?.profile_picture || '',
+  });
+
+  const persistUser = (nextUser) => {
+    setUser(nextUser);
+    localStorage.setItem('aegisSession', JSON.stringify(nextUser));
+  };
+
+  const refreshProfileFromApi = async (email) => {
+    const emailValue = String(email || '').trim().toLowerCase();
+    if (!emailValue) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailValue }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data?.success) return;
+
+      setUser((prev) => {
+        const next = {
+          ...prev,
+          email: data.email || emailValue,
+          name: data.name || prev.name,
+          idNo: data.id_no || prev.idNo,
+          profilePicture: data.profile_picture || prev.profilePicture,
+        };
+        localStorage.setItem('aegisSession', JSON.stringify(next));
+        return next;
+      });
+    } catch (e) {
+      console.warn('Profile refresh failed:', e);
+    }
+  };
+
   // Check for existing session on mount
   useEffect(() => {
     const savedUser = localStorage.getItem('aegisSession');
     if (savedUser) {
       try {
-        const user = JSON.parse(savedUser);
-        setUser({
-          email: user.email || '',
-          name: user.name || '',
-          idNo: user.idNo || '',
-          profilePicture: user.profilePicture || '',
-        });
+        const user = normalizeUser(JSON.parse(savedUser));
+        setUser(user);
         setIsAuthenticated(true);
+        refreshProfileFromApi(user.email);
       } catch (e) {
         console.error('Failed to parse session:', e);
       }
@@ -163,23 +201,10 @@ function App() {
   };
 
   const handleLogin = (payload) => {
-    const normalized = typeof payload === 'object' && payload !== null
-      ? {
-          email: payload.email || '',
-          name: payload.name || '',
-          idNo: payload.idNo || '',
-          profilePicture: payload.profilePicture || '',
-        }
-      : {
-          email: '',
-          name: '',
-          idNo: '',
-          profilePicture: '',
-        };
-    setUser(normalized);
+    const normalized = normalizeUser(payload);
     setIsAuthenticated(true);
-    // Save session
-    localStorage.setItem('aegisSession', JSON.stringify(normalized));
+    persistUser(normalized);
+    refreshProfileFromApi(normalized.email);
   };
 
   const handleLogout = () => {

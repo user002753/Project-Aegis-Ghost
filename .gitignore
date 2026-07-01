@@ -47,3 +47,4 @@ app.log
 error.log
 debug_*.txt
 temp_*.txt
+core/data/

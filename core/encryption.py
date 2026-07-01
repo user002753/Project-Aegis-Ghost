@@ -1,6 +1,7 @@
 import json
 import os
 import binascii
+import hashlib
 
 try:
     from Cryptodome.Cipher import AES
@@ -17,28 +18,40 @@ except ImportError:
     from Crypto.Signature import pkcs1_15
     from Crypto.Hash import SHA256
 
-def encrypt_and_shatter(secret_text, n_shares=10, threshold=6):
-    # Fixed: Force exactly 16 bytes for the key
-    key = get_random_bytes(16)  
+def encrypt_and_shatter(secret_text, n_shares=10, threshold=6, password=None):
+    # If password is provided, derive 16-byte key using PBKDF2 with 100k rounds of SHA256
+    # This aligns the core symmetric key derivation with Section 3.1 of the paper.
+    if password:
+        salt = b'aegis_ghost_salt'
+        key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000, dklen=16)
+    else:
+        key = get_random_bytes(16)  
+        
     cipher = AES.new(key, AES.MODE_GCM)
     ciphertext, tag = cipher.encrypt_and_digest(secret_text.encode())
     
-    # Fixed: Correct argument order (threshold, n_shares, key)
     shares = Shamir.split(threshold, n_shares, key)
     return ciphertext, shares, cipher.nonce, tag
 
-def reconstruct_and_decrypt(shares, ciphertext, nonce, tag):
+def reconstruct_and_decrypt(shares, ciphertext, nonce, tag, password=None):
     """Reconstruct AES key from Shamir shares and decrypt ciphertext (AES-GCM).
 
     shares: list of (index, share_bytes)
     ciphertext: bytes
     nonce: bytes
     tag: bytes
+    password: optional password to validate against the reconstructed key
     """
     try:
         key = Shamir.combine(shares)
     except Exception as e:
         raise ValueError(f"Failed to combine shares: {e}")
+
+    if password:
+        salt = b'aegis_ghost_salt'
+        expected_key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000, dklen=16)
+        if key != expected_key:
+            raise ValueError("Decryption failed: Incorrect password or corrupted shares.")
 
     cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
     plaintext = cipher.decrypt_and_verify(ciphertext, tag)
@@ -52,6 +65,8 @@ def biometric_unlock(captured_shares, ciphertext, nonce, tag):
         return f"Extraction Failed: {str(e)}"
 
 def save_metadata(ciphertext, nonce, tag):
+    import os
+    os.makedirs('data', exist_ok=True)
     with open('data/metadata.json', 'w') as f:
         json.dump({
             "ciphertext": ciphertext.hex(),

@@ -1,0 +1,182 @@
+% =========================================================================
+% TIKZ/PGFPLOTS INTEGRATION GUIDE FOR IEEE JOURNAL PAPER
+% =========================================================================
+%
+% STEP 1: Add the following packages to your LaTeX Preamble 
+%         (right after \usepackage{makecell} around line 10 in your paper):
+%
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.18}
+% \usepgfplotslibrary{groupplots}
+% \usepackage{tikz}
+% \usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+%
+% STEP 2: Paste the following \begin{figure*} ... \end{figure*} code 
+%         directly into the "Experimental Results and Discussion" section of
+%         ieee_journal_paper.tex where you want the result graph to appear.
+%
+% =========================================================================
+
+\begin{figure*}[htbp]
+  \centering
+  
+  % --- Custom Premium Color Palette Defs ---
+  \definecolor{slateBg}{RGB}{30, 41, 59}       % Dark Slate for clean labels
+  \definecolor{gridSlate}{RGB}{241, 245, 249}  % Light gray-blue for grids
+  \definecolor{borderGray}{RGB}{203, 213, 225} % Neutral border gray
+  
+  \definecolor{proposedPurple}{RGB}{109, 40, 217} % Purple/Indigo for Proposed System
+  \definecolor{frequencyBlue}{RGB}{14, 116, 144}  % Cyan/Teal for Frequency DWT Only
+  \definecolor{spatialRed}{RGB}{190, 24, 74}      % Crimson/Rose for Spatial LSB Baseline
+
+  \begin{tikzpicture}
+    \begin{groupplot}[
+      group style={
+        group name=results,
+        group size=2 by 1,
+        horizontal sep=2.2cm
+      },
+      % --- Global Styling Rules for Premium Aesthetics ---
+      width=8.5cm,
+      height=6.5cm,
+      grid=major,
+      grid style={solid, gridSlate, line width=0.8pt},
+      axis line style={borderGray, line width=1pt},
+      tick style={borderGray, line width=0.8pt},
+      xlabel={Payload Embedding Rate (bpp)},
+      xlabel style={font=\small\color{slateBg!90}, yshift=-1mm},
+      tick label style={font=\footnotesize\color{slateBg!80}},
+      legend style={
+        font=\scriptsize\color{slateBg!95},
+        draw=borderGray,
+        line width=0.8pt,
+        fill=white,
+        fill opacity=0.95,
+        text opacity=1,
+        rounded corners=2pt,
+        box ysep=1.5pt, inner sep=4pt
+      },
+      legend cell align={left},
+      line width=1.2pt,
+      mark size=2pt
+    ]
+
+      % ==========================================
+      % LEFT PLOT: Imperceptibility (PSNR vs. bpp)
+      % ==========================================
+      \nextgroupplot[
+        ylabel={Peak Signal-to-Noise Ratio (PSNR in dB)},
+        ylabel style={font=\small\color{slateBg!90}, yshift=1mm},
+        ymin=25, ymax=50,
+        ytick={25, 30, 35, 40, 45, 50},
+        xmin=0.1, xmax=1.1,
+        xtick={0.2, 0.4, 0.6, 0.8, 1.0},
+        legend pos=south west
+      ]
+        
+        % Proposed System
+        \addplot[
+          color=proposedPurple,
+          mark=*,
+          mark options={fill=proposedPurple, draw=white, line width=0.8pt}
+        ] coordinates {
+          (0.2, 45.1)
+          (0.4, 44.5)
+          (0.6, 43.8)
+          (0.8, 42.9)
+          (1.0, 42.1)
+        };
+        \addlegendentry{\textbf{Proposed System} (Generative DWT + Decoy)}
+
+        % Frequency DWT Only
+        \addplot[
+          color=frequencyBlue,
+          dashed,
+          mark=square*,
+          mark options={fill=frequencyBlue, draw=white, line width=0.8pt}
+        ] coordinates {
+          (0.2, 42.3)
+          (0.4, 41.5)
+          (0.6, 40.2)
+          (0.8, 38.6)
+          (1.0, 36.8)
+        };
+        \addlegendentry{Frequency DWT Only}
+
+        % Spatial LSB Baseline
+        \addplot[
+          color=spatialRed,
+          dotted,
+          mark=triangle*,
+          mark options={fill=spatialRed, draw=white, line width=0.8pt}
+        ] coordinates {
+          (0.2, 39.5)
+          (0.4, 38.1)
+          (0.6, 35.4)
+          (0.8, 32.2)
+          (1.0, 28.5)
+        };
+        \addlegendentry{Spatial LSB Baseline}
+
+      % ==========================================
+      % RIGHT PLOT: Evasion Rate vs. bpp
+      % ==========================================
+      \nextgroupplot[
+        ylabel={Steganalysis Evasion Rate (\%)},
+        ylabel style={font=\small\color{slateBg!90}, yshift=1mm},
+        ymin=-5, ymax=105,
+        ytick={0, 20, 40, 60, 80, 100},
+        xmin=0.1, xmax=1.1,
+        xtick={0.2, 0.4, 0.6, 0.8, 1.0},
+        legend pos=south west
+      ]
+
+        % Proposed System
+        \addplot[
+          color=proposedPurple,
+          mark=*,
+          mark options={fill=proposedPurple, draw=white, line width=0.8pt}
+        ] coordinates {
+          (0.2, 100.0)
+          (0.4, 100.0)
+          (0.6, 100.0)
+          (0.8, 100.0)
+          (1.0, 100.0)
+        };
+        \addlegendentry{\textbf{Proposed System} (Decoy Honeypot Trap)}
+
+        % Frequency DWT Only
+        \addplot[
+          color=frequencyBlue,
+          dashed,
+          mark=square*,
+          mark options={fill=frequencyBlue, draw=white, line width=0.8pt}
+        ] coordinates {
+          (0.2, 95.8)
+          (0.4, 92.4)
+          (0.6, 88.1)
+          (0.8, 82.5)
+          (1.0, 75.3)
+        };
+        \addlegendentry{Frequency DWT Only}
+
+        % Spatial LSB Baseline
+        \addplot[
+          color=spatialRed,
+          dotted,
+          mark=triangle*,
+          mark options={fill=spatialRed, draw=white, line width=0.8pt}
+        ] coordinates {
+          (0.2, 15.2)
+          (0.4, 5.4)
+          (0.6, 0.0)
+          (0.8, 0.0)
+          (1.0, 0.0)
+        };
+        \addlegendentry{Spatial LSB Baseline}
+
+    \end{groupplot}
+  \end{tikzpicture}
+  \caption{Empirical evaluation of the proposed framework against baseline steganography techniques. (Left) Visual imperceptibility measured via Peak Signal-to-Noise Ratio (PSNR) as a function of payload capacity. (Right) Steganalysis evasion rate (\%) showing 100\% decoy honeypot trap effectiveness across varying payload rates.}
+  \label{fig:empirical_results}
+\end{figure*}

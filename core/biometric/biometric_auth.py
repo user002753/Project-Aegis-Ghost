@@ -361,6 +361,7 @@ class BiometricAuthenticator:
         threshold: float = 0.65,
         min_motion_px: float = 1.0,
         min_face_change: float = 0.5,
+        strict_liveness: bool = False,
     ):
         """
         Verify face identity + simple passive liveness from multiple frames.
@@ -531,14 +532,22 @@ class BiometricAuthenticator:
             mouth_movement_detected = True
 
         # Simple liveness: any natural movement is enough (blink, mouth, or motion)
-        # Also pass if we have multiple frames even without significant motion (steady face is OK)
-        liveness_passed = bool(
-            blink_detected or 
-            mouth_movement_detected or 
-            total_motion >= float(min_motion_px) or 
-            avg_face_change >= float(min_face_change) or
-            len(probe_image_paths) >= 3  # Multiple frames even without motion = liveness
-        )
+        # In strict mode, we disable the multiple frame count bypass (which allowed steady, non-moving faces to pass)
+        # to ensure that presentation attacks using static prints are completely blocked.
+        if strict_liveness:
+            liveness_passed = bool(
+                blink_detected or 
+                mouth_movement_detected or 
+                (total_motion >= float(min_motion_px) and avg_face_change >= float(min_face_change))
+            )
+        else:
+            liveness_passed = bool(
+                blink_detected or 
+                mouth_movement_detected or 
+                total_motion >= float(min_motion_px) or 
+                avg_face_change >= float(min_face_change) or
+                len(probe_image_paths) >= 3  # Multiple frames fallback
+            )
 
         avg_distance = float(np.mean(distances)) if distances else None
         matched = bool(avg_distance is not None and avg_distance < float(threshold) and liveness_passed)
