@@ -48,3 +48,36 @@ error.log
 debug_*.txt
 temp_*.txt
 core/data/
+
+# Biometric data, DBs & private keys
+data/profile_faces/
+data/profile_pictures/
+data/secure_tmp/
+data/users.json
+data/manifest_signing.key
+data/watermark.key
+assets/private.pem
+assets/public.pem
+assets/owner.jpg
+assets/owner.sig
+assets/owner_sample.wav
+assets/known_devices.json
+
+# Local scripts & execution configurations
+*.bat
+steganalysis_project/
+test_*.py
+run_pipeline.py
+render_diagrams.py
+assets/*.py
+
+# Paper drafts, standalones, and image/data assets
+Aegis_Ghost_IEEE_Paper.docx
+ieee_journal_paper.tex
+*.tex
+*.png
+*.jpeg
+*.jpg
+*.npy
+!assets/logo.png
+!frontend/public/
